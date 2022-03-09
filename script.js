@@ -1,3 +1,5 @@
+testWorks();
+
 const body = document.body;
 body.style.padding = "50px";
 
@@ -15,11 +17,18 @@ const selectedChecker = {
   color: "",
   position: null,
 };
+let whosMove = "white";
+let whiteCheckersList = [];
+let blackCheckersList = [];
+
+// const h3El = document.createElement("h3");
+
+// document.body.prepend(h3El);
 
 const createMainContainer = (board) => {
   const mainContainer = document.createElement("div");
   mainContainer.style.width = "40%";
-  mainContainer.style.backgroundColor = "darkblue";
+  mainContainer.style.backgroundColor = "#1E352F";
   mainContainer.style.margin = "0 auto";
   mainContainer.style.padding = "20px 10px 20px 10px";
   mainContainer.appendChild(board);
@@ -88,31 +97,49 @@ const createBoard = () => {
     for (let y = 0; y < columns; y++) {
       if (i === 0 || i === 1 || i === 2) {
         if ((i % 2 === 0) & (y % 2 === 1)) {
-          board.appendChild(createCell(createWhiteChecker(), "red"));
+          board.appendChild(createCell(createWhiteChecker(), "#A6C36F"));
+          whiteCheckersList.push({
+            isQueen: false,
+            position: i === 0 ? i * 8 + y : i === 2 ? i * 8 + y : null,
+          });
         } else if ((i % 2 === 1) & (y % 2 === 0)) {
-          board.appendChild(createCell(createWhiteChecker(), "red"));
+          board.appendChild(createCell(createWhiteChecker(), "#A6C36F"));
+          whiteCheckersList.push({
+            isQueen: false,
+            position: i === 1 ? i * 8 + y : null,
+          });
         } else {
           board.appendChild(createCell());
         }
       } else if (i === rows - 1 || i === rows - 2 || i === rows - 3) {
         if ((i % 2 === 0) & (y % 2 === 1)) {
-          board.appendChild(createCell(createBlackChecker(), "red"));
+          board.appendChild(createCell(createBlackChecker(), "#A6C36F"));
+          blackCheckersList.push({
+            isQueen: false,
+            position: i === rows - 2 ? i * 8 + y : null,
+          });
         } else if ((i % 2 === 1) & (y % 2 === 0)) {
-          board.appendChild(createCell(createBlackChecker(), "red"));
+          board.appendChild(createCell(createBlackChecker(), "#A6C36F"));
+          blackCheckersList.push({
+            isQueen: false,
+            position: i === rows - 1 ? i * 8 + y : rows - 3 ? i * 8 + y : null,
+          });
         } else {
           board.appendChild(createCell());
         }
       } else {
         if ((i % 2 === 0) & (y % 2 === 1)) {
-          board.appendChild(createCell(null, "red"));
+          board.appendChild(createCell(null, "#A6C36F"));
         } else if ((i % 2 === 1) & (y % 2 === 0)) {
-          board.appendChild(createCell(null, "red"));
+          board.appendChild(createCell(null, "#A6C36F"));
         } else {
           board.appendChild(createCell());
         }
       }
     }
   }
+  console.log(whiteCheckersList);
+  console.log(blackCheckersList);
 };
 
 const removeColor = (index) => {
@@ -138,8 +165,13 @@ const checkerClickListener = () => {
   for (let i = 0; i < getBoard.length; i++) {
     getBoard[i].addEventListener("click", () => {
       if (getBoard[i].childNodes.length > 0) {
-        getBoard[i].firstChild.style.backgroundColor = "green";
         const attributeValue = getBoard[i].firstChild.getAttribute("name");
+        if (whosMove === "white" && attributeValue === "white") {
+          getBoard[i].firstChild.style.backgroundColor = "#BEEF9E";
+        }
+        if (whosMove === "black" && attributeValue === "black") {
+          getBoard[i].firstChild.style.backgroundColor = "#BEEF9E";
+        }
         removeColor(i);
         selectedChecker.color = attributeValue;
         selectedChecker.position = i;
@@ -155,30 +187,62 @@ checkerMoveClickListener = () => {
     getBoard[i].addEventListener("click", () => {
       if (selectedChecker.position) {
         // White checker move
-        if (selectedChecker.color === "white") {
+        console.log(selectedChecker);
+        if (selectedChecker.color === "white" && whosMove === "white") {
           if (
             i === selectedChecker.position + 7 &&
             getBoard[i].childNodes.length <= 0 &&
             selectedChecker.color === "white"
           ) {
+            // THIS ONE WAS AN INTENTION TO MAKE A QUEEN
+
+            // whiteCheckersList = whiteCheckersList.map((item) => {
+            //   if (i > 55) {
+            //     console.log("this one");
+            //     return { ...item, position: i, isQueen: true };
+            //   } else if (item.position === selectedChecker.position) {
+            //     return { ...item, position: i };
+            //   } else {
+            //     return item;
+            //   }
+            // });
+            if (
+              selectedChecker.position === 8 ||
+              selectedChecker.position === 24 ||
+              selectedChecker.position === 40 ||
+              selectedChecker.position === 56
+            ) {
+              return;
+            }
             getBoard[i].appendChild(createWhiteChecker());
             getBoard[selectedChecker.position].removeChild(
               getBoard[selectedChecker.position].firstChild
             );
             selectedChecker.color = "";
             selectedChecker.position = null;
+            whosMove = "black";
           }
           if (
             i === selectedChecker.position + 9 &&
             getBoard[i].childNodes.length <= 0 &&
             selectedChecker.color === "white"
           ) {
+            if (
+              selectedChecker.position === 7 ||
+              selectedChecker.position === 23 ||
+              selectedChecker.position === 39 ||
+              selectedChecker.position === 55
+            ) {
+              return;
+            }
+
             getBoard[i].appendChild(createWhiteChecker());
             getBoard[selectedChecker.position].removeChild(
               getBoard[selectedChecker.position].firstChild
             );
             selectedChecker.color = "";
             selectedChecker.position = null;
+            whosMove = "black";
           }
           // White checker beat left
           if (
@@ -198,6 +262,7 @@ checkerMoveClickListener = () => {
             );
             selectedChecker.color = "";
             selectedChecker.position = null;
+            whosMove = "black";
           }
 
           // White checker beat right
@@ -218,6 +283,7 @@ checkerMoveClickListener = () => {
             );
             selectedChecker.color = "";
             selectedChecker.position = null;
+            whosMove = "black";
           }
 
           // White checker beat back right
@@ -238,6 +304,7 @@ checkerMoveClickListener = () => {
             );
             selectedChecker.color = "";
             selectedChecker.position = null;
+            whosMove = "black";
           }
 
           // White checker beat back left
@@ -258,34 +325,53 @@ checkerMoveClickListener = () => {
             );
             selectedChecker.color = "";
             selectedChecker.position = null;
+            whosMove = "black";
           }
         }
 
         // Black checker move
-        if (selectedChecker.color === "black") {
+        if (selectedChecker.color === "black" && whosMove === "black") {
           if (
             i === selectedChecker.position - 7 &&
             getBoard[i].childNodes.length <= 0 &&
             selectedChecker.color === "black"
           ) {
+            if (
+              selectedChecker.position === 7 ||
+              selectedChecker.position === 23 ||
+              selectedChecker.position === 39 ||
+              selectedChecker.position === 55
+            ) {
+              return;
+            }
             getBoard[i].appendChild(createBlackChecker());
             getBoard[selectedChecker.position].removeChild(
               getBoard[selectedChecker.position].firstChild
             );
             selectedChecker.color = "";
             selectedChecker.position = null;
+            whosMove = "white";
           }
           if (
             i === selectedChecker.position - 9 &&
             getBoard[i].childNodes.length <= 0 &&
             selectedChecker.color === "black"
           ) {
+            if (
+              selectedChecker.position === 8 ||
+              selectedChecker.position === 24 ||
+              selectedChecker.position === 40 ||
+              selectedChecker.position === 56
+            ) {
+              return;
+            }
             getBoard[i].appendChild(createBlackChecker());
             getBoard[selectedChecker.position].removeChild(
               getBoard[selectedChecker.position].firstChild
             );
             selectedChecker.color = "";
             selectedChecker.position = null;
+            whosMove = "white";
           }
 
           // Black checker beat right
@@ -306,6 +392,7 @@ checkerMoveClickListener = () => {
             );
             selectedChecker.color = "";
             selectedChecker.position = null;
+            whosMove = "white";
           }
 
           // Black checker beat left
@@ -326,6 +413,7 @@ checkerMoveClickListener = () => {
             );
             selectedChecker.color = "";
             selectedChecker.position = null;
+            whosMove = "white";
           }
 
           // Black checker beat back left
@@ -346,6 +434,7 @@ checkerMoveClickListener = () => {
             );
             selectedChecker.color = "";
             selectedChecker.position = null;
+            whosMove = "white";
           }
 
           // Black checker beat right
@@ -366,6 +455,7 @@ checkerMoveClickListener = () => {
             );
             selectedChecker.color = "";
             selectedChecker.position = null;
+            whosMove = "white";
           }
         }
       }
