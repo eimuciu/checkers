@@ -182,30 +182,88 @@ const checkerClickListener = () => {
   }
 };
 
+function whiteQueenMaking(num) {
+  whiteCheckersList = whiteCheckersList.map((item) => {
+    if (selectedChecker.position === item.position && selectedChecker.position + num > 55) return { ...item, position: selectedChecker.position + num, isQueen: true }
+    if (selectedChecker.position === item.position) return { ...item, position: selectedChecker.position + num }
+    return item
+  });
+}
+
+function blackQueenMaking(num) {
+  blackCheckersList = blackCheckersList.map((item) => {
+    if (selectedChecker.position === item.position && selectedChecker.position + num < 8) return { ...item, position: selectedChecker.position + num, isQueen: true }
+    if (selectedChecker.position === item.position) return { ...item, position: selectedChecker.position + num }
+    return item
+  });
+}
+
+function whiteQueenMove(activeChecker, moveCoordinate) {
+  console.log("White queen moves")
+  const queenPosition = activeChecker.position
+
+  // All available moves
+  const availableUpLeftMoves = []
+
+  // Wall coordinates
+  const leftWall = [8, 24, 40, 56]
+  const topWall = [1, 3, 5, 7]
+  const rightWall = [7, 23, 39, 55]
+  const bottomWall = [56, 58, 60, 62]
+
+  // Calculate available moves for up left moves
+  for (let i = activeChecker.position; i > 0; i -= 9) {
+    if (activeChecker.position === i) continue
+    if (leftWall.includes(i)) {
+      availableUpLeftMoves.push(i)
+      break
+    }
+    if (topWall.includes(i)) {
+      availableUpLeftMoves.push(i)
+      break
+    }
+    availableUpLeftMoves.push(i)
+  }
+
+  // Make up left move with a queen
+  if (availableUpLeftMoves.includes(moveCoordinate)) {
+    getBoard[moveCoordinate].appendChild(createWhiteChecker());
+    getBoard[queenPosition].removeChild(
+      getBoard[queenPosition].firstChild
+    );
+
+    // Update white checkers array with coordinates
+    whiteCheckersList = whiteCheckersList.map((item) => {
+      if (queenPosition === item.position) return { ...item, position: moveCoordinate }
+      return item
+    });
+
+    // Reset moves
+    activeChecker.color = "";
+    activeChecker.position = null;
+    whosMove = "black";
+  }
+
+}
+
 checkerMoveClickListener = () => {
   for (let i = 0; i < getBoard.length; i++) {
     getBoard[i].addEventListener("click", () => {
       if (selectedChecker.position) {
-        // White checker move
         console.log(selectedChecker);
+
+        // White checker move
         if (selectedChecker.color === "white" && whosMove === "white") {
+
+          // White queen moves
+          const isQueen = whiteCheckersList.find(item => item.position === selectedChecker.position).isQueen
+          if (isQueen) return whiteQueenMove(selectedChecker, i)
+
           if (
             i === selectedChecker.position + 7 &&
             getBoard[i].childNodes.length <= 0 &&
             selectedChecker.color === "white"
           ) {
-            // THIS ONE WAS AN INTENTION TO MAKE A QUEEN
-
-            // whiteCheckersList = whiteCheckersList.map((item) => {
-            //   if (i > 55) {
-            //     console.log("this one");
-            //     return { ...item, position: i, isQueen: true };
-            //   } else if (item.position === selectedChecker.position) {
-            //     return { ...item, position: i };
-            //   } else {
-            //     return item;
-            //   }
-            // });
             if (
               selectedChecker.position === 8 ||
               selectedChecker.position === 24 ||
@@ -218,9 +276,16 @@ checkerMoveClickListener = () => {
             getBoard[selectedChecker.position].removeChild(
               getBoard[selectedChecker.position].firstChild
             );
+            // Queen making
+            whiteQueenMaking(7)
+
+            // Resetting moves
             selectedChecker.color = "";
             selectedChecker.position = null;
             whosMove = "black";
+
+
+
           }
           if (
             i === selectedChecker.position + 9 &&
@@ -240,6 +305,10 @@ checkerMoveClickListener = () => {
             getBoard[selectedChecker.position].removeChild(
               getBoard[selectedChecker.position].firstChild
             );
+            //Queen making
+            whiteQueenMaking(9)
+
+            //Resetting moves
             selectedChecker.color = "";
             selectedChecker.position = null;
             whosMove = "black";
@@ -260,6 +329,11 @@ checkerMoveClickListener = () => {
             getBoard[selectedChecker.position + 7].removeChild(
               getBoard[selectedChecker.position + 7].firstChild
             );
+
+            //Queen making
+            whiteQueenMaking(14)
+
+            //Resetting moves
             selectedChecker.color = "";
             selectedChecker.position = null;
             whosMove = "black";
@@ -281,6 +355,11 @@ checkerMoveClickListener = () => {
             getBoard[selectedChecker.position + 9].removeChild(
               getBoard[selectedChecker.position + 9].firstChild
             );
+
+            //Queen making
+            whiteQueenMaking(18)
+
+            //Resetting moves
             selectedChecker.color = "";
             selectedChecker.position = null;
             whosMove = "black";
@@ -348,6 +427,11 @@ checkerMoveClickListener = () => {
             getBoard[selectedChecker.position].removeChild(
               getBoard[selectedChecker.position].firstChild
             );
+
+            //Queen making
+            blackQueenMaking(-7)
+
+            //Resetting moves
             selectedChecker.color = "";
             selectedChecker.position = null;
             whosMove = "white";
@@ -369,6 +453,11 @@ checkerMoveClickListener = () => {
             getBoard[selectedChecker.position].removeChild(
               getBoard[selectedChecker.position].firstChild
             );
+
+            //Queen making
+            blackQueenMaking(-9)
+
+            // Resetting moves
             selectedChecker.color = "";
             selectedChecker.position = null;
             whosMove = "white";
@@ -390,6 +479,10 @@ checkerMoveClickListener = () => {
             getBoard[selectedChecker.position - 7].removeChild(
               getBoard[selectedChecker.position - 7].firstChild
             );
+            // Queen making
+            blackQueenMaking(-14)
+
+            // Resetting moves
             selectedChecker.color = "";
             selectedChecker.position = null;
             whosMove = "white";
@@ -411,6 +504,10 @@ checkerMoveClickListener = () => {
             getBoard[selectedChecker.position - 9].removeChild(
               getBoard[selectedChecker.position - 9].firstChild
             );
+            // Queen making
+            blackQueenMaking(-18)
+
+            // Resetting moves
             selectedChecker.color = "";
             selectedChecker.position = null;
             whosMove = "white";
