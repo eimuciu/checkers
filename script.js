@@ -1,5 +1,7 @@
 // ***todos***
 //  console gives an error of childs function being undefined (NOT affecting working for now)
+// Padaryt kad kirtimas butinas
+// Padaryt keleta galimu kirtimu
 
 const body = document.body;
 body.style.padding = "50px";
