@@ -1,8 +1,5 @@
 // ***todos***
-//  queen can move through two chekers in an available space
 //  console gives an error of childs function being undefined (NOT affecting working for now)
-
-testWorks();
 
 const body = document.body;
 body.style.padding = "50px";
@@ -154,8 +151,6 @@ const createBoard = () => {
       }
     }
   }
-  console.log(whiteCheckersList);
-  console.log(blackCheckersList);
 };
 
 const removeColor = (index) => {
@@ -261,7 +256,7 @@ function whiteQueenMove(activeChecker, moveCoordinate) {
     if (getBoard[i].hasChildNodes() && getBoard[i - 9].hasChildNodes()) {
       break;
     }
-    if (getBoard[i].hasChildNodes() && getBoard[i].getAttribute("name") === 'white') {
+    if (getBoard[i].hasChildNodes() && getBoard[i].firstChild.getAttribute("name") === 'white') {
       break;
     }
     if (getBoard[i].hasChildNodes()) {
@@ -289,7 +284,7 @@ function whiteQueenMove(activeChecker, moveCoordinate) {
     if (getBoard[i].hasChildNodes() && getBoard[i + 9].hasChildNodes()) {
       break;
     }
-    if (getBoard[i].hasChildNodes() && getBoard[i].getAttribute("name") === "white") {
+    if (getBoard[i].hasChildNodes() && getBoard[i].firstChild.getAttribute("name") === "white") {
       break;
     }
     if (getBoard[i].hasChildNodes()) {
@@ -317,7 +312,7 @@ function whiteQueenMove(activeChecker, moveCoordinate) {
     if (getBoard[i].hasChildNodes() && getBoard[i - 7].hasChildNodes()) {
       break;
     }
-    if (getBoard[i].hasChildNodes && getBoard[i].getAttribute("name") === "white") {
+    if (getBoard[i].hasChildNodes && getBoard[i].firstChild.getAttribute("name") === "white") {
       break;
     }
     if (getBoard[i].hasChildNodes()) {
@@ -345,7 +340,7 @@ function whiteQueenMove(activeChecker, moveCoordinate) {
     if (getBoard[i].hasChildNodes() && getBoard[i + 7].hasChildNodes()) {
       break;
     }
-    if (getBoard[i].hasChildNodes && getBoard[i].getAttribute("name") === "white") {
+    if (getBoard[i].hasChildNodes && getBoard[i].firstChild.getAttribute("name") === "white") {
       break;
     }
     if (getBoard[i].hasChildNodes()) {
@@ -451,9 +446,13 @@ function blackQueenMove(activeChecker, moveCoordinate) {
 
   // All available moves
   const availableUpLeftMoves = []
+  const allowedUpLeftKicks = []
   const availableDownRightMoves = []
+  const allowedDownRightKicks = []
   const availableUpRightMoves = []
+  const allowedUpRightKicks = []
   const availableDownLeftMoves = []
+  const allowedDownLeftKicks = []
 
   // Wall coordinates
   const leftWall = [8, 24, 40, 56]
@@ -465,12 +464,26 @@ function blackQueenMove(activeChecker, moveCoordinate) {
   for (let i = activeChecker.position; i > 0; i -= 9) {
     if (activeChecker.position === i) continue
     if (leftWall.includes(i)) {
-      availableUpLeftMoves.push(i)
+      if (!getBoard[i].hasChildNodes()) {
+        availableUpLeftMoves.push(i)
+      }
       break
     }
     if (topWall.includes(i)) {
-      availableUpLeftMoves.push(i)
+      if (!getBoard[i].hasChildNodes()) {
+        availableUpLeftMoves.push(i)
+      }
       break
+    }
+    if (getBoard[i].hasChildNodes() && getBoard[i - 9].hasChildNodes()) {
+      break;
+    }
+    if (getBoard[i].hasChildNodes() && getBoard[i].firstChild.getAttribute("name") === 'black') {
+      break;
+    }
+    if (getBoard[i].hasChildNodes()) {
+      allowedUpLeftKicks.push(i)
+      continue;
     }
     availableUpLeftMoves.push(i)
   }
@@ -479,12 +492,26 @@ function blackQueenMove(activeChecker, moveCoordinate) {
   for (let i = activeChecker.position; i < 63; i += 9) {
     if (activeChecker.position === i) continue
     if (rightWall.includes(i)) {
-      availableDownRightMoves.push(i)
+      if (!getBoard[i].hasChildNodes()) {
+        availableDownRightMoves.push(i)
+      }
       break
     }
     if (bottomWall.includes(i)) {
-      availableDownRightMoves.push(i)
+      if (!getBoard[i].hasChildNodes()) {
+        availableDownRightMoves.push(i)
+      }
       break
+    }
+    if (getBoard[i].hasChildNodes() && getBoard[i + 9].hasChildNodes()) {
+      break;
+    }
+    if (getBoard[i].hasChildNodes() && getBoard[i].firstChild.getAttribute("name") === 'black') {
+      break;
+    }
+    if (getBoard[i].hasChildNodes()) {
+      allowedDownRightKicks.push(i)
+      continue;
     }
     availableDownRightMoves.push(i)
   }
@@ -493,26 +520,60 @@ function blackQueenMove(activeChecker, moveCoordinate) {
   for (let i = activeChecker.position; i > 0; i -= 7) {
     if (activeChecker.position === i) continue
     if (rightWall.includes(i)) {
-      availableUpRightMoves.push(i)
+      if (!getBoard[i].hasChildNodes()) {
+        availableUpRightMoves.push(i)
+      }
       break
     }
     if (topWall.includes(i)) {
-      availableUpRightMoves.push(i)
+      if (!getBoard[i].hasChildNodes()) {
+        availableUpRightMoves.push(i)
+      }
       break
+    }
+    if (bottomWall.includes(i)) {
+      if (!getBoard[i].hasChildNodes()) {
+        availableDownRightMoves.push(i)
+      }
+      break
+    }
+    if (getBoard[i].hasChildNodes() && getBoard[i - 7].hasChildNodes()) {
+      break;
+    }
+    if (getBoard[i].hasChildNodes() && getBoard[i].firstChild.getAttribute("name") === 'black') {
+      break;
+    }
+    if (getBoard[i].hasChildNodes()) {
+      allowedUpRightKicks.push(i)
+      continue;
     }
     availableUpRightMoves.push(i)
   }
 
-  // Calculate available moves for down right coordinates
+  // Calculate available moves for down left coordinates
   for (let i = activeChecker.position; i < 63; i += 7) {
     if (activeChecker.position === i) continue
     if (leftWall.includes(i)) {
-      availableDownLeftMoves.push(i)
+      if (!getBoard[i].hasChildNodes()) {
+        availableDownLeftMoves.push(i)
+      }
       break
     }
     if (bottomWall.includes(i)) {
-      availableDownLeftMoves.push(i)
+      if (!getBoard[i].hasChildNodes()) {
+        availableDownLeftMoves.push(i)
+      }
       break
+    }
+    if (getBoard[i].hasChildNodes() && getBoard[i + 7].hasChildNodes()) {
+      break;
+    }
+    if (getBoard[i].hasChildNodes() && getBoard[i].firstChild.getAttribute("name") === 'black') {
+      break;
+    }
+    if (getBoard[i].hasChildNodes()) {
+      allowedDownLeftKicks.push(i)
+      continue;
     }
     availableDownLeftMoves.push(i)
   }
@@ -523,6 +584,11 @@ function blackQueenMove(activeChecker, moveCoordinate) {
     getBoard[queenPosition].removeChild(
       getBoard[queenPosition].firstChild
     );
+    allowedUpLeftKicks.forEach(kickPosition => {
+      if (kickPosition > moveCoordinate) {
+        getBoard[kickPosition].removeChild(getBoard[kickPosition].firstChild)
+      }
+    });
     // Update white checkers array with coordinates
     blackCheckersList = blackCheckersList.map((item) => {
       if (queenPosition === item.position) return { ...item, position: moveCoordinate }
@@ -540,6 +606,11 @@ function blackQueenMove(activeChecker, moveCoordinate) {
     getBoard[queenPosition].removeChild(
       getBoard[queenPosition].firstChild
     );
+    allowedDownRightKicks.forEach(kickPosition => {
+      if (kickPosition < moveCoordinate) {
+        getBoard[kickPosition].removeChild(getBoard[kickPosition].firstChild)
+      }
+    });
     // Update white checkers array with coordinates
     blackCheckersList = blackCheckersList.map((item) => {
       if (queenPosition === item.position) return { ...item, position: moveCoordinate }
@@ -557,6 +628,11 @@ function blackQueenMove(activeChecker, moveCoordinate) {
     getBoard[queenPosition].removeChild(
       getBoard[queenPosition].firstChild
     );
+    allowedUpRightKicks.forEach(kickPosition => {
+      if (kickPosition > moveCoordinate) {
+        getBoard[kickPosition].removeChild(getBoard[kickPosition].firstChild)
+      }
+    });
     // Update white checkers array with coordinates
     blackCheckersList = blackCheckersList.map((item) => {
       if (queenPosition === item.position) return { ...item, position: moveCoordinate }
@@ -574,6 +650,11 @@ function blackQueenMove(activeChecker, moveCoordinate) {
     getBoard[queenPosition].removeChild(
       getBoard[queenPosition].firstChild
     );
+    allowedDownLeftKicks.forEach(kickPosition => {
+      if (kickPosition < moveCoordinate) {
+        getBoard[kickPosition].removeChild(getBoard[kickPosition].firstChild)
+      }
+    });
     // Update white checkers array with coordinates
     blackCheckersList = blackCheckersList.map((item) => {
       if (queenPosition === item.position) return { ...item, position: moveCoordinate }
