@@ -1,5 +1,4 @@
 // ***todos***
-//  console gives an error of childs function being undefined (NOT affecting working for now)
 // Padaryt kad kirtimas butinas
 // Padaryt keleta galimu kirtimu
 
@@ -221,7 +220,6 @@ function blackQueenMaking(num, coord) {
 }
 
 function whiteQueenMove(activeChecker, moveCoordinate) {
-  console.log("White queen moves")
   const queenPosition = activeChecker.position
 
   // All available moves
@@ -443,7 +441,6 @@ function whiteQueenMove(activeChecker, moveCoordinate) {
 }
 
 function blackQueenMove(activeChecker, moveCoordinate) {
-  console.log("black queen moves")
   const queenPosition = activeChecker.position
 
   // All available moves
@@ -670,12 +667,10 @@ function blackQueenMove(activeChecker, moveCoordinate) {
 
 }
 
-checkerMoveClickListener = () => {
+const checkerMoveClickListener = () => {
   for (let i = 0; i < getBoard.length; i++) {
     getBoard[i].addEventListener("click", () => {
       if (selectedChecker.position) {
-        console.log(selectedChecker);
-
         // White checker move
         if (selectedChecker.color === "white" && whosMove === "white") {
           // White queen moves
@@ -752,7 +747,7 @@ checkerMoveClickListener = () => {
               getBoard[selectedChecker.position + 7].firstChild
             );
 
-            //Queen making
+            //Queen making!
             whiteQueenMaking(14, i)
 
             //Resetting moves
@@ -789,6 +784,9 @@ checkerMoveClickListener = () => {
 
           // White checker beat back right
           if (
+            selectedChecker.position &&
+            getBoard[selectedChecker.position - 7] &&
+            getBoard[selectedChecker.position - 14] &&
             getBoard[selectedChecker.position - 7].childNodes.length > 0 &&
             getBoard[selectedChecker.position - 7].firstChild.getAttribute(
               "name"
@@ -810,6 +808,9 @@ checkerMoveClickListener = () => {
 
           // White checker beat back left
           if (
+            selectedChecker.position &&
+            getBoard[selectedChecker.position - 9] &&
+            getBoard[selectedChecker.position - 18] &&
             getBoard[selectedChecker.position - 9].childNodes.length > 0 &&
             getBoard[selectedChecker.position - 9].firstChild.getAttribute(
               "name"
@@ -893,6 +894,7 @@ checkerMoveClickListener = () => {
 
           // Black checker beat up right
           if (
+            selectedChecker.position &&
             getBoard[selectedChecker.position - 7].childNodes.length > 0 &&
             getBoard[selectedChecker.position - 7].firstChild.getAttribute(
               "name"
@@ -918,6 +920,7 @@ checkerMoveClickListener = () => {
 
           // Black checker beat up left
           if (
+            selectedChecker.position &&
             getBoard[selectedChecker.position - 9].childNodes.length > 0 &&
             getBoard[selectedChecker.position - 9].firstChild.getAttribute(
               "name"
@@ -943,6 +946,9 @@ checkerMoveClickListener = () => {
 
           // Black checker beat back left
           if (
+            selectedChecker.position &&
+            getBoard[selectedChecker.position + 7] &&
+            getBoard[selectedChecker.position + 14] &&
             getBoard[selectedChecker.position + 7].childNodes.length > 0 &&
             getBoard[selectedChecker.position + 7].firstChild.getAttribute(
               "name"
@@ -964,6 +970,9 @@ checkerMoveClickListener = () => {
 
           // Black checker beat back right
           if (
+            selectedChecker.position &&
+            getBoard[selectedChecker.position + 9] &&
+            getBoard[selectedChecker.position + 18] &&
             getBoard[selectedChecker.position + 9].childNodes.length > 0 &&
             getBoard[selectedChecker.position + 9].firstChild.getAttribute(
               "name"
