@@ -242,7 +242,7 @@ function whiteQueenMove(activeChecker, moveCoordinate) {
   for (let i = activeChecker.position; i > 0; i -= 9) {
     if (activeChecker.position === i) continue
     if (leftWall.includes(i)) {
-      if (!getBoard[i].hasChildNodes) {
+      if (!getBoard[i].hasChildNodes()) {
         availableUpLeftMoves.push(i)
       }
       break
@@ -312,7 +312,7 @@ function whiteQueenMove(activeChecker, moveCoordinate) {
     if (getBoard[i].hasChildNodes() && getBoard[i - 7].hasChildNodes()) {
       break;
     }
-    if (getBoard[i].hasChildNodes && getBoard[i].firstChild.getAttribute("name") === "white") {
+    if (getBoard[i].hasChildNodes() && getBoard[i].firstChild.getAttribute("name") === "white") {
       break;
     }
     if (getBoard[i].hasChildNodes()) {
@@ -340,7 +340,7 @@ function whiteQueenMove(activeChecker, moveCoordinate) {
     if (getBoard[i].hasChildNodes() && getBoard[i + 7].hasChildNodes()) {
       break;
     }
-    if (getBoard[i].hasChildNodes && getBoard[i].firstChild.getAttribute("name") === "white") {
+    if (getBoard[i].hasChildNodes() && getBoard[i].firstChild.getAttribute("name") === "white") {
       break;
     }
     if (getBoard[i].hasChildNodes()) {
