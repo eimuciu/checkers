@@ -543,6 +543,7 @@ const checkerMoveClickListener = () => {
           // White checker moving down left
           if (
             i === selectedChecker.position + 7 &&
+            getBoard[i] &&
             getBoard[i].childNodes.length <= 0 &&
             selectedChecker.color === 'white'
           ) {
@@ -570,6 +571,7 @@ const checkerMoveClickListener = () => {
           }
           if (
             i === selectedChecker.position + 9 &&
+            getBoard[i] &&
             getBoard[i].childNodes.length <= 0 &&
             selectedChecker.color === 'white'
           ) {
@@ -596,6 +598,8 @@ const checkerMoveClickListener = () => {
           }
           // White checker beat down left
           if (
+            getBoard[selectedChecker.position + 7] &&
+            getBoard[selectedChecker.position + 14] &&
             getBoard[selectedChecker.position + 7].childNodes.length > 0 &&
             getBoard[selectedChecker.position + 7].firstChild.getAttribute(
               'name',
@@ -622,6 +626,8 @@ const checkerMoveClickListener = () => {
 
           // White checker beat down right
           if (
+            getBoard[selectedChecker.position + 9] &&
+            getBoard[selectedChecker.position + 18] &&
             getBoard[selectedChecker.position + 9].childNodes.length > 0 &&
             getBoard[selectedChecker.position + 9].firstChild.getAttribute(
               'name',
@@ -712,6 +718,7 @@ const checkerMoveClickListener = () => {
           // Black checker moving up right
           if (
             i === selectedChecker.position - 7 &&
+            getBoard[i] &&
             getBoard[i].childNodes.length <= 0 &&
             selectedChecker.color === 'black'
           ) {
@@ -740,6 +747,7 @@ const checkerMoveClickListener = () => {
           // Black checker moving up left
           if (
             i === selectedChecker.position - 9 &&
+            getBoard[i] &&
             getBoard[i].childNodes.length <= 0 &&
             selectedChecker.color === 'black'
           ) {
@@ -768,6 +776,8 @@ const checkerMoveClickListener = () => {
           // Black checker beat up right
           if (
             selectedChecker.position &&
+            getBoard[selectedChecker.position - 7] &&
+            getBoard[selectedChecker.position - 14] &&
             getBoard[selectedChecker.position - 7].childNodes.length > 0 &&
             getBoard[selectedChecker.position - 7].firstChild.getAttribute(
               'name',
@@ -794,6 +804,8 @@ const checkerMoveClickListener = () => {
           // Black checker beat up left
           if (
             selectedChecker.position &&
+            getBoard[selectedChecker.position - 9] &&
+            getBoard[selectedChecker.position - 18] &&
             getBoard[selectedChecker.position - 9].childNodes.length > 0 &&
             getBoard[selectedChecker.position - 9].firstChild.getAttribute(
               'name',
