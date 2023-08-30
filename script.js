@@ -23,6 +23,200 @@ let whosMove = 'white';
 let whiteCheckersList = [];
 let blackCheckersList = [];
 
+function checkForNecessaryMovies() {
+  const necessaryMoves = []
+
+  const isLeftWallObstacle = (checker) => {
+    let obstacle = false;
+    if (
+      // left wall
+      checker.position === 8 ||
+      checker.position === 24 ||
+      checker.position === 40 ||
+      checker.position === 56 ||
+      // left near wall
+      checker.position === 1 ||
+      checker.position === 17 ||
+      checker.position === 33 ||
+      checker.position === 49
+    ) { obstacle = true }
+    return obstacle
+  }
+
+  const isRightWallObstacle = (checker) => {
+    let obstacle = false;
+    if (
+      // right wall
+      checker.position === 7 ||
+      checker.position === 23 ||
+      checker.position === 39 ||
+      checker.position === 55 ||
+      // right near wall
+      checker.position === 14 ||
+      checker.position === 30 ||
+      checker.position === 46 ||
+      checker.position === 62
+    ) { obstacle = true }
+    return obstacle
+  }
+
+  const isTopWallObstacle = (checker) => {
+    let obstacle = false;
+    if (
+      // top wall
+      checker.position === 1 ||
+      checker.position === 3 ||
+      checker.position === 5 ||
+      checker.position === 7 ||
+      // top near wall
+      checker.position === 8 ||
+      checker.position === 10 ||
+      checker.position === 12 ||
+      checker.position === 14
+    ) { obstacle = true }
+    return obstacle
+  }
+
+  const isBottomWallObstacle = (checker) => {
+    let obstacle = false;
+    if (
+      // bottom wall
+      checker.position === 56 ||
+      checker.position === 58 ||
+      checker.position === 60 ||
+      checker.position === 62 ||
+      // bottom near wall
+      checker.position === 49 ||
+      checker.position === 51 ||
+      checker.position === 53 ||
+      checker.position === 55
+    ) { obstacle = true }
+    return obstacle
+  }
+
+  const isLeftDownKickValid = (checker, kickColor) => {
+    let isValid = false;
+    if (getBoard[checker.position + 7] && getBoard[checker.position + 14] && getBoard[checker.position + 7].childNodes.length > 0
+      && getBoard[checker.position + 7].firstChild.getAttribute("name") === kickColor
+      && getBoard[checker.position + 14].childNodes.length <= 0
+    ) {
+      if (!isLeftWallObstacle(checker) && !isBottomWallObstacle(checker)) {
+        isValid = true
+      }
+    }
+    return isValid;
+  }
+
+  const isRightDownKickValid = (checker, kickColor) => {
+    let isValid = false;
+    if (getBoard[checker.position + 9] && getBoard[checker.position + 18] && getBoard[checker.position + 9].childNodes.length > 0
+      && getBoard[checker.position + 9].firstChild.getAttribute("name") === kickColor
+      && getBoard[checker.position + 18].childNodes.length <= 0
+    ) {
+      if (!isRightWallObstacle(checker) && !isBottomWallObstacle(checker)) {
+        isValid = true
+      }
+    }
+    return isValid;
+  }
+
+  const isRightUpKickValid = (checker, kickColor) => {
+    let isValid = false;
+    if (getBoard[checker.position - 7] && getBoard[checker.position - 14] && getBoard[checker.position - 7].childNodes.length > 0
+      && getBoard[checker.position - 7].firstChild.getAttribute("name") === kickColor
+      && getBoard[checker.position - 14].childNodes.length <= 0
+    ) {
+      if (!isRightWallObstacle(checker) && !isTopWallObstacle(checker)) {
+        isValid = true
+      }
+    }
+    return isValid;
+  }
+
+  const isLeftUpKickValid = (checker, kickColor) => {
+    let isValid = false;
+    if (getBoard[checker.position - 9] && getBoard[checker.position - 18] && getBoard[checker.position - 9].childNodes.length > 0
+      && getBoard[checker.position - 9].firstChild.getAttribute("name") === kickColor
+      && getBoard[checker.position - 18].childNodes.length <= 0
+    ) {
+      if (!isLeftWallObstacle(checker) && !isTopWallObstacle(checker)) {
+        isValid = true
+      }
+    }
+    return isValid;
+  }
+
+  if (whosMove === "white") {
+    whiteCheckersList.forEach(whiteChecker => {
+      if (isLeftDownKickValid(whiteChecker, "black")) {
+        necessaryMoves.push({ checker: whiteChecker, mustMoveTo: whiteChecker.position + 14 })
+      }
+      if (isRightDownKickValid(whiteChecker, "black")) {
+        necessaryMoves.push({ checker: whiteChecker, mustMoveTo: whiteChecker.position + 18 })
+      }
+      if (isRightUpKickValid(whiteChecker, "black")) {
+        necessaryMoves.push({ checker: whiteChecker, mustMoveTo: whiteChecker.position - 14 })
+      }
+      if (isLeftUpKickValid(whiteChecker, "black")) {
+        necessaryMoves.push({ checker: whiteChecker, mustMoveTo: whiteChecker.position - 18 })
+      }
+    })
+  }
+
+  if (whosMove === "black") {
+    blackCheckersList.forEach(blackChecker => {
+      if (isLeftDownKickValid(blackChecker, "white")) {
+        necessaryMoves.push({ checker: blackChecker, mustMoveTo: blackChecker.position + 14 })
+      }
+      if (isRightDownKickValid(blackChecker, "white")) {
+        necessaryMoves.push({ checker: blackChecker, mustMoveTo: blackChecker.position + 18 })
+      }
+      if (isRightUpKickValid(blackChecker, "white")) {
+        necessaryMoves.push({ checker: blackChecker, mustMoveTo: blackChecker.position - 14 })
+      }
+      if (isLeftUpKickValid(blackChecker, "white")) {
+        necessaryMoves.push({ checker: blackChecker, mustMoveTo: blackChecker.position - 18 })
+      }
+    })
+  }
+
+  createListOfMoves(necessaryMoves)
+
+}
+
+function createListOfMoves(headersArray) {
+  let header = null;
+  let tmp = null;
+  console.log(headersArray)
+  for (var i = 0; i < headersArray; i++) {
+  }
+
+
+  console.log("Headers array: ", headersArray)
+}
+
+function growDepth() {
+  const obj = {
+    id: 1,
+    name: "one",
+    next: {
+      id: 2,
+      name: "two",
+      next: {
+        id: 3,
+        name: "three"
+      }
+    }
+  }
+  let head = obj;
+  while (head != null) {
+    // console.log(head.name)
+    head = head.next
+  }
+}
+
+growDepth()
+
 // const h3El = document.createElement("h3");
 
 // document.body.prepend(h3El);
@@ -525,6 +719,9 @@ function queenMove(
 const checkerMoveClickListener = () => {
   for (let i = 0; i < getBoard.length; i++) {
     getBoard[i].addEventListener('click', () => {
+
+      checkForNecessaryMovies()
+
       if (selectedChecker.position) {
         // White checker move
         if (selectedChecker.color === 'white' && whosMove === 'white') {
