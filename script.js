@@ -23,7 +23,7 @@ const selectedChecker = {
 let whosMove = 'white';
 let whiteCheckersList = [];
 let blackCheckersList = [];
-let necessaryMoves = []
+let mustMoves = []
 
 const isLeftWallObstacle = (checker) => {
   let obstacle = false;
@@ -146,61 +146,59 @@ const isLeftUpKickValid = (checker, kickColor) => {
 }
 
 function checkForNecessaryMovies() {
-  necessaryMoves = []
+  mustMoves = []
+  let necessaryMoves = []
   if (whosMove === "white") {
     whiteCheckersList.forEach(whiteChecker => {
       if (isLeftDownKickValid(whiteChecker, "black")) {
-        necessaryMoves.push({ checker: whiteChecker, mustMoveTo: whiteChecker.position + 14 })
+        necessaryMoves.push({ checker: whiteChecker })
       }
       if (isRightDownKickValid(whiteChecker, "black")) {
-        necessaryMoves.push({ checker: whiteChecker, mustMoveTo: whiteChecker.position + 18 })
+        necessaryMoves.push({ checker: whiteChecker })
       }
       if (isRightUpKickValid(whiteChecker, "black")) {
-        necessaryMoves.push({ checker: whiteChecker, mustMoveTo: whiteChecker.position - 14 })
+        necessaryMoves.push({ checker: whiteChecker })
       }
       if (isLeftUpKickValid(whiteChecker, "black")) {
-        necessaryMoves.push({ checker: whiteChecker, mustMoveTo: whiteChecker.position - 18 })
+        necessaryMoves.push({ checker: whiteChecker })
       }
     })
     if (necessaryMoves.length) {
-      createListOfMoves("black")
+      createListOfMoves(necessaryMoves, "black")
     }
   }
 
   if (whosMove === "black") {
     blackCheckersList.forEach(blackChecker => {
       if (isLeftDownKickValid(blackChecker, "white")) {
-        necessaryMoves.push({ checker: blackChecker, mustMoveTo: blackChecker.position + 14 })
+        necessaryMoves.push({ checker: blackChecker })
       }
       if (isRightDownKickValid(blackChecker, "white")) {
-        necessaryMoves.push({ checker: blackChecker, mustMoveTo: blackChecker.position + 18 })
+        necessaryMoves.push({ checker: blackChecker })
       }
       if (isRightUpKickValid(blackChecker, "white")) {
-        necessaryMoves.push({ checker: blackChecker, mustMoveTo: blackChecker.position - 14 })
+        necessaryMoves.push({ checker: blackChecker })
       }
       if (isLeftUpKickValid(blackChecker, "white")) {
-        necessaryMoves.push({ checker: blackChecker, mustMoveTo: blackChecker.position - 18 })
+        necessaryMoves.push({ checker: blackChecker })
       }
     })
     if (necessaryMoves.length) {
-      createListOfMoves("white")
+      createListOfMoves(necessaryMoves, "white")
     }
   }
 
 }
 
-function createListOfMoves(kickColor) {
+function createListOfMoves(necessaryMoves, kickColor) {
 
-  console.log(necessaryMoves)
-
-  const original = { ...necessaryMoves[0] }
-  original.moves = []
+  let unmodifiedChecker;
 
   const whiteList = whiteCheckersList.map(x => ({ ...x, state: 'w' }))
   const blackList = blackCheckersList.map(x => ({ ...x, state: 'b' }))
 
-  let checkersArray = whiteList.concat(blackList)
-  const currentCelectedChecker = checkersArray.find(x => x.position === original.checker?.position)
+  let checkersArray;
+  let currentCelectedChecker;
 
   const queue = []
   const moves = []
@@ -208,95 +206,116 @@ function createListOfMoves(kickColor) {
   let curMov;
 
   if (necessaryMoves.length) {
-    queue.push(currentCelectedChecker)
-    console.log('>>>>>>>>>>STARTING HERE:')
-    while (queue.length > 0) {
-      console.log("going")
-      curMov = queue.shift()
 
-      const plusfourteen = checkersArray.find(x => curMov.position + 14 === x.position)?.state
-      const minusfourteen = checkersArray.find(x => curMov.position - 14 === x.position)?.state
-      const pluseighteen = checkersArray.find(x => curMov.position + 18 === x.position)?.state
-      const minuseighteen = checkersArray.find(x => curMov.position - 18 === x.position)?.state
+    for (let i = 0; i < necessaryMoves.length; i++) {
+      checkersArray = whiteList.concat(blackList)
+      unmodifiedChecker = necessaryMoves[i]
+      unmodifiedChecker.moves = []
+      currentCelectedChecker = checkersArray.find(x => x.position === unmodifiedChecker.checker?.position)
 
-      if (
-        isRightWallObstacle(curMov) && plusfourteen && minuseighteen ||
-        isLeftWallObstacle(curMov) && pluseighteen && minusfourteen ||
-        isTopWallObstacle(curMov) && plusfourteen && pluseighteen ||
-        isBottomWallObstacle(curMov) && minusfourteen && minuseighteen ||
-        plusfourteen && minusfourteen && pluseighteen && minuseighteen
-      ) {
-        console.log("NO MOVES")
-        console.log("Original: ", original)
-        console.log("No moves of a current: ", curMov)
-      }
+      queue.push(currentCelectedChecker)
+      while (queue.length > 0) {
+        curMov = queue.shift()
 
-      if (isRightDownKickValid(curMov, kickColor)) {
-        console.log("Right down kick valid")
-        const nextCheckerState = checkersArray.find(x => curMov.position + 18 === x.position)?.state
-        const currentCheckerState = checkersArray.find(x => curMov.position === x.position)?.state
-        if (!nextCheckerState) {
-          queue.push({ position: curMov.position + 18 })
-          checkersArray.push({ position: curMov.position + 18, state: currentCheckerState + ',+18' })
+        const plusfourteen = checkersArray.find(x => curMov.position + 14 === x.position)?.state
+        const minusfourteen = checkersArray.find(x => curMov.position - 14 === x.position)?.state
+        const pluseighteen = checkersArray.find(x => curMov.position + 18 === x.position)?.state
+        const minuseighteen = checkersArray.find(x => curMov.position - 18 === x.position)?.state
+
+        if (
+          // if kick steps are taken
+          isRightWallObstacle(curMov) && plusfourteen && minuseighteen ||
+          isLeftWallObstacle(curMov) && pluseighteen && minusfourteen ||
+          isTopWallObstacle(curMov) && plusfourteen && pluseighteen ||
+          isBottomWallObstacle(curMov) && minusfourteen && minuseighteen ||
+          plusfourteen && minusfourteen && pluseighteen && minuseighteen ||
+          isBottomWallObstacle(curMov) && isRightWallObstacle(curMov) && minuseighteen ||
+          isBottomWallObstacle(curMov) && isLeftWallObstacle(curMov) && minusfourteen ||
+          isTopWallObstacle(curMov) && isRightWallObstacle(curMov) && plusfourteen ||
+          isTopWallObstacle(curMov) && isLeftWallObstacle(curMov) && pluseighteen ||
+          // if some steps are taken and some steps are not taken and still not valid moves because two cells acrros are empty
+          // with walls
+          isRightWallObstacle(curMov) && !isLeftDownKickValid(curMov, kickColor) && minuseighteen ||
+          isRightWallObstacle(curMov) && plusfourteen && !isLeftUpKickValid(curMov, kickColor) ||
+
+          isLeftWallObstacle(curMov) && !isRightDownKickValid(curMov, kickColor) && minusfourteen ||
+          isLeftWallObstacle(curMov) && pluseighteen && !isRightUpKickValid(curMov, kickColor) ||
+
+          isTopWallObstacle(curMov) && !isLeftDownKickValid(curMov, kickColor) && pluseighteen ||
+          isTopWallObstacle(curMov) && plusfourteen && !isRightDownKickValid(curMov, kickColor) ||
+
+          isBottomWallObstacle(curMov) && !isRightUpKickValid(curMov, kickColor) && minuseighteen ||
+          isBottomWallObstacle(curMov) && minusfourteen && !isLeftUpKickValid(curMov, kickColor) ||
+          // without walls
+          // singles
+          // +18
+          // !isRightDownKickValid(curMov, kickColor)
+          // -14
+          // !isRightUpKickValid(curMov, kickColor)
+          // +14
+          // !isLeftDownKickValid(curMov, kickColor)
+          // -18
+          // !isLeftUpKickValid(curMov, kickColor)
+          !isLeftDownKickValid(curMov, kickColor) && minusfourteen && pluseighteen && minuseighteen ||
+          plusfourteen && !isRightUpKickValid(curMov, kickColor) && pluseighteen && minuseighteen ||
+          plusfourteen && minusfourteen && !isRightDownKickValid(curMov, kickColor) && minuseighteen ||
+          plusfourteen && minusfourteen && pluseighteen && !isLeftUpKickValid(curMov, kickColor) ||
+          // doubles
+          // 1st with all others
+          !isLeftDownKickValid(curMov, kickColor) && !isRightUpKickValid(curMov, kickColor) && pluseighteen && minuseighteen ||
+          !isLeftDownKickValid(curMov, kickColor) && minusfourteen && !isRightDownKickValid(curMov, kickColor) && minuseighteen ||
+          !isLeftDownKickValid(curMov, kickColor) && minusfourteen && pluseighteen && !isLeftUpKickValid(curMov, kickColor) ||
+          // 2nd with all others except 1st
+          plusfourteen && !isRightUpKickValid(curMov, kickColor) && !isRightDownKickValid(curMov, kickColor) && minuseighteen ||
+          plusfourteen && !isRightUpKickValid(curMov, kickColor) && pluseighteen && !isLeftUpKickValid(curMov, kickColor) ||
+          // 3rd with 4th
+          plusfourteen && minusfourteen && !isRightDownKickValid(curMov, kickColor) && !isLeftUpKickValid(curMov, kickColor)
+        ) {
+          const lastCheckerState = checkersArray.find(x => x.position === curMov.position).state.split(',').splice(1)
+          moves.push({ ...unmodifiedChecker, moves: lastCheckerState })
+        }
+
+        if (isRightDownKickValid(curMov, kickColor)) {
+          console.log("Right down kick valid")
+          const nextCheckerState = checkersArray.find(x => curMov.position + 18 === x.position)?.state
+          const currentCheckerState = checkersArray.find(x => curMov.position === x.position)?.state
+          if (!nextCheckerState) {
+            queue.push({ position: curMov.position + 18 })
+            checkersArray.push({ position: curMov.position + 18, state: currentCheckerState + ',+18' })
+          }
+        }
+        if (isLeftDownKickValid(curMov, kickColor)) {
+          console.log("Left down kick valid")
+          const nextCheckerState = checkersArray.find(x => curMov.position + 14 === x.position)?.state
+          const currentCheckerState = checkersArray.find(x => curMov.position === x.position)?.state
+          if (!nextCheckerState) {
+            queue.push({ position: curMov.position + 14 })
+            checkersArray.push({ position: curMov.position + 14, state: currentCheckerState + ',+14' })
+          }
+        }
+        if (isRightUpKickValid(curMov, kickColor)) {
+          console.log("Right up kick valid")
+          const nextCheckerState = checkersArray.find(x => curMov.position - 14 === x.position)?.state
+          const currentCheckerState = checkersArray.find(x => curMov.position === x.position)?.state
+          if (!nextCheckerState) {
+            queue.push({ position: curMov.position - 14 })
+            checkersArray.push({ position: curMov.position - 14, state: currentCheckerState + ',-14' })
+          }
+        }
+        if (isLeftUpKickValid(curMov, kickColor)) {
+          console.log("Left up kick valid")
+          const nextCheckerState = checkersArray.find(x => curMov.position - 18 === x.position)?.state
+          const currentCheckerState = checkersArray.find(x => curMov.position === x.position)?.state
+          if (!nextCheckerState) {
+            queue.push({ position: curMov.position - 18 })
+            checkersArray.push({ position: curMov.position - 18, state: currentCheckerState + ',-18' })
+          }
         }
       }
-      if (isLeftDownKickValid(curMov, kickColor)) {
-        console.log("Left down kick valid")
-        const nextCheckerState = checkersArray.find(x => curMov.position + 14 === x.position)?.state
-        const currentCheckerState = checkersArray.find(x => curMov.position === x.position)?.state
-        if (!nextCheckerState) {
-          queue.push({ position: curMov.position + 14 })
-          checkersArray.push({ position: curMov.position + 14, state: currentCheckerState + ',+14' })
-        }
-      }
-      if (isRightUpKickValid(curMov, kickColor)) {
-        console.log("Right up kick valid")
-        const nextCheckerState = checkersArray.find(x => curMov.position - 14 === x.position)?.state
-        const currentCheckerState = checkersArray.find(x => curMov.position === x.position)?.state
-        if (!nextCheckerState) {
-          queue.push({ position: curMov.position - 14 })
-          checkersArray.push({ position: curMov.position - 14, state: currentCheckerState + ',-14' })
-        }
-      }
-      if (isLeftUpKickValid(curMov, kickColor)) {
-        console.log("Left up kick valid")
-        const nextCheckerState = checkersArray.find(x => curMov.position - 18 === x.position)?.state
-        const currentCheckerState = checkersArray.find(x => curMov.position === x.position)?.state
-        if (!nextCheckerState) {
-          queue.push({ position: curMov.position - 18 })
-          checkersArray.push({ position: curMov.position - 18, state: currentCheckerState + ',-18' })
-        }
-      }
-      console.log()
-      console.log(checkersArray)
     }
   }
-
-  // console.log(checkersArray)
-  // makeMovesGroups(checkersArray, original)
+  mustMoves = moves
 }
-
-// function makeMovesGroups(checkersArray, original) {
-
-//   const queue = [checkersArray.find(x => x.position === original.checker.position)]
-//   let current;
-//   const possibleMoves = []
-
-//   while (queue.length) {
-//     current = queue.shift()
-//     possibleMoves.push(current.position)
-
-//     const stringToArra = current.state.split(',').splice(1)
-
-//     console.log(stringToArra[0].charAt(0))
-
-//   }
-
-//   console.log(possibleMoves)
-
-
-
-// }
 
 function growDepth() {
   const obj = {
@@ -318,7 +337,7 @@ function growDepth() {
   }
 }
 
-growDepth()
+// growDepth()
 
 // const h3El = document.createElement("h3");
 
@@ -819,12 +838,59 @@ function queenMove(
   }
 }
 
+function isMoveMadeWithOrWitoutAMustMove(movingToPosition) {
+  if (selectedChecker.position) {
+    if (!mustMoves.length) {
+      return
+    }
+    const findSelectedChecker = mustMoves.find(x => x.checker.position === selectedChecker.position)
+    if (findSelectedChecker && findSelectedChecker.hasOwnProperty("moves") && movingToPosition === eval(selectedChecker.position + findSelectedChecker.moves[0])) {
+      return
+    }
+
+    if (findSelectedChecker && findSelectedChecker.hasOwnProperty("moves") && movingToPosition !== eval(selectedChecker.position + findSelectedChecker.moves[0])) {
+      getBoard[mustMoves[0].checker.position].style.backgroundColor = "red"
+      getBoard[eval(mustMoves[0].checker.position + mustMoves[0].moves[0])].style.backgroundColor = "red"
+      function proceedRemoval() {
+        getBoard[mustMoves[0].checker.position].style.backgroundColor = 'rgb(166, 195, 111)'
+        getBoard[eval(mustMoves[0].checker.position + mustMoves[0].moves[0])].style.backgroundColor = 'rgb(166, 195, 111)'
+        getBoard[movingToPosition].removeChild(getBoard[movingToPosition].firstChild)
+      }
+      const timer = setTimeout(proceedRemoval, 2000)
+      return
+    }
+
+    getBoard[mustMoves[0].checker.position].style.backgroundColor = "red"
+    getBoard[eval(mustMoves[0].checker.position + mustMoves[0].moves[0])].style.backgroundColor = "red"
+
+    function proceedRemoval() {
+      getBoard[mustMoves[0].checker.position].style.backgroundColor = 'rgb(166, 195, 111)'
+      getBoard[eval(mustMoves[0].checker.position + mustMoves[0].moves[0])].style.backgroundColor = 'rgb(166, 195, 111)'
+      getBoard[mustMoves[0].checker.position].removeChild(getBoard[mustMoves[0].checker.position].firstChild)
+    }
+
+    const timer = setTimeout(proceedRemoval, 2000)
+  }
+
+
+  // {
+  //   "checker": {
+  //       "isQueen": false,
+  //       "position": 26
+  //   },
+  //   "moves": [
+  //       "+18"
+  //   ]
+  // }
+
+}
+
 const checkerMoveClickListener = () => {
   for (let i = 0; i < getBoard.length; i++) {
     getBoard[i].addEventListener('click', () => {
-
+      mustMoves = []
       checkForNecessaryMovies()
-
+      console.log(mustMoves)
       if (selectedChecker.position) {
         // White checker move
         if (selectedChecker.color === 'white' && whosMove === 'white') {
@@ -862,13 +928,15 @@ const checkerMoveClickListener = () => {
             // Queen making
             whiteQueenMaking(7, i);
 
+            // Move validity
+            isMoveMadeWithOrWitoutAMustMove(i)
+
             // Resetting moves
             selectedChecker.color = '';
             selectedChecker.position = null;
             whosMove = 'black';
-
-            // White checker moving down right
           }
+          // White checker moving down right
           if (
             i === selectedChecker.position + 9 &&
             getBoard[i] &&
@@ -890,6 +958,9 @@ const checkerMoveClickListener = () => {
             );
             //Queen making
             whiteQueenMaking(9, i);
+
+            // Move validity
+            isMoveMadeWithOrWitoutAMustMove(i)
 
             //Resetting moves
             selectedChecker.color = '';
@@ -917,6 +988,9 @@ const checkerMoveClickListener = () => {
 
             //Queen making!
             whiteQueenMaking(14, i);
+
+            // Move validity
+            isMoveMadeWithOrWitoutAMustMove(i)
 
             //Resetting moves
             selectedChecker.color = '';
@@ -946,6 +1020,9 @@ const checkerMoveClickListener = () => {
             //Queen making
             whiteQueenMaking(18, i);
 
+            // Move validity
+            isMoveMadeWithOrWitoutAMustMove(i)
+
             //Resetting moves
             selectedChecker.color = '';
             selectedChecker.position = null;
@@ -971,6 +1048,11 @@ const checkerMoveClickListener = () => {
             getBoard[selectedChecker.position - 7].removeChild(
               getBoard[selectedChecker.position - 7].firstChild,
             );
+
+            // Move validity
+            isMoveMadeWithOrWitoutAMustMove(i)
+
+            // Resetting moves
             selectedChecker.color = '';
             selectedChecker.position = null;
             whosMove = 'black';
@@ -995,6 +1077,11 @@ const checkerMoveClickListener = () => {
             getBoard[selectedChecker.position - 9].removeChild(
               getBoard[selectedChecker.position - 9].firstChild,
             );
+
+            // Move validity
+            isMoveMadeWithOrWitoutAMustMove(i)
+
+            // Resetting moves
             selectedChecker.color = '';
             selectedChecker.position = null;
             whosMove = 'black';
@@ -1038,6 +1125,12 @@ const checkerMoveClickListener = () => {
             //Queen making
             blackQueenMaking(-7, i);
 
+            // Move validity
+            isMoveMadeWithOrWitoutAMustMove(i)
+
+            // Move validity
+            isMoveMadeWithOrWitoutAMustMove(i)
+
             //Resetting moves
             selectedChecker.color = '';
             selectedChecker.position = null;
@@ -1067,6 +1160,9 @@ const checkerMoveClickListener = () => {
             //Queen making
             blackQueenMaking(-9, i);
 
+            // Move validity
+            isMoveMadeWithOrWitoutAMustMove(i)
+
             // Resetting moves
             selectedChecker.color = '';
             selectedChecker.position = null;
@@ -1094,6 +1190,9 @@ const checkerMoveClickListener = () => {
             );
             // Queen making
             blackQueenMaking(-14, i);
+
+            // Move validity
+            isMoveMadeWithOrWitoutAMustMove(i)
 
             // Resetting moves
             selectedChecker.color = '';
@@ -1123,6 +1222,9 @@ const checkerMoveClickListener = () => {
             // Queen making
             blackQueenMaking(-18, i);
 
+            // Move validity
+            isMoveMadeWithOrWitoutAMustMove(i)
+
             // Resetting moves
             selectedChecker.color = '';
             selectedChecker.position = null;
@@ -1148,6 +1250,11 @@ const checkerMoveClickListener = () => {
             getBoard[selectedChecker.position + 7].removeChild(
               getBoard[selectedChecker.position + 7].firstChild,
             );
+
+            // Move validity
+            isMoveMadeWithOrWitoutAMustMove(i)
+
+            // Resetting moves
             selectedChecker.color = '';
             selectedChecker.position = null;
             whosMove = 'white';
@@ -1172,6 +1279,11 @@ const checkerMoveClickListener = () => {
             getBoard[selectedChecker.position + 9].removeChild(
               getBoard[selectedChecker.position + 9].firstChild,
             );
+
+            // Move validity
+            isMoveMadeWithOrWitoutAMustMove(i)
+
+            // Resetting moves
             selectedChecker.color = '';
             selectedChecker.position = null;
             whosMove = 'white';
