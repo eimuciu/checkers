@@ -868,10 +868,44 @@ function isMoveMadeWithOrWitoutAMustMove(movingToPosition) {
       return
     }
     const colorMoving = whosMove
+    const checkerSelected = { ...selectedChecker }
 
     if (findSelectedChecker && findSelectedChecker.hasOwnProperty("moves") && movingToPosition !== eval(selectedChecker.position + findSelectedChecker.moves[0])) {
       getBoard[mustMoves[0].checker.position].style.backgroundColor = "red"
       getBoard[eval(mustMoves[0].checker.position + mustMoves[0].moves[0])].style.backgroundColor = "red"
+
+      if (mustMoves.length > 1) {
+        function proceedRemoval() {
+          if (checkerSelected.position === mustMoves[0].checker.position) {
+            getBoard[movingToPosition].removeChild(getBoard[movingToPosition].firstChild)
+            if (colorMoving === 'white') {
+              whiteCheckersList = removeCheckerFromArray(whiteCheckersList, movingToPosition)
+              console.log("whiteCheckersList: ", whiteCheckersList)
+            }
+            if (colorMoving === 'black') {
+              blackCheckersList = removeCheckerFromArray(blackCheckersList, movingToPosition)
+              console.log("blackCheckersList: ", blackCheckersList)
+            }
+          } else {
+            getBoard[mustMoves[0].checker.position].removeChild(getBoard[mustMoves[0].checker.position].firstChild)
+            if (colorMoving === 'white') {
+              whiteCheckersList = removeCheckerFromArray(whiteCheckersList, mustMoves[0].checker.position)
+              console.log("whiteCheckersList: ", whiteCheckersList)
+            }
+            if (colorMoving === 'black') {
+              blackCheckersList = removeCheckerFromArray(blackCheckersList, mustMoves[0].checker.position)
+              console.log("blackCheckersList: ", blackCheckersList)
+            }
+          }
+
+          getBoard[mustMoves[0].checker.position].style.backgroundColor = 'rgb(166, 195, 111)'
+          getBoard[eval(mustMoves[0].checker.position + mustMoves[0].moves[0])].style.backgroundColor = 'rgb(166, 195, 111)'
+        }
+        const timer = setTimeout(proceedRemoval, 2000)
+        return
+      }
+
+
 
       function proceedRemoval() {
         if (colorMoving === 'white') {
