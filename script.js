@@ -21,7 +21,7 @@ const selectedChecker = {
 let whosMove = 'white';
 let whiteCheckersList = [];
 let blackCheckersList = [];
-let mustMoves = []
+let mustMoves = [];
 
 const isLeftWallObstacle = (checker) => {
   let obstacle = false;
@@ -36,9 +36,11 @@ const isLeftWallObstacle = (checker) => {
     checker.position === 17 ||
     checker.position === 33 ||
     checker.position === 49
-  ) { obstacle = true }
-  return obstacle
-}
+  ) {
+    obstacle = true;
+  }
+  return obstacle;
+};
 
 const isRightWallObstacle = (checker) => {
   let obstacle = false;
@@ -53,9 +55,11 @@ const isRightWallObstacle = (checker) => {
     checker.position === 30 ||
     checker.position === 46 ||
     checker.position === 62
-  ) { obstacle = true }
-  return obstacle
-}
+  ) {
+    obstacle = true;
+  }
+  return obstacle;
+};
 
 const isTopWallObstacle = (checker) => {
   let obstacle = false;
@@ -70,9 +74,11 @@ const isTopWallObstacle = (checker) => {
     checker.position === 10 ||
     checker.position === 12 ||
     checker.position === 14
-  ) { obstacle = true }
-  return obstacle
-}
+  ) {
+    obstacle = true;
+  }
+  return obstacle;
+};
 
 const isBottomWallObstacle = (checker) => {
   let obstacle = false;
@@ -87,163 +93,209 @@ const isBottomWallObstacle = (checker) => {
     checker.position === 51 ||
     checker.position === 53 ||
     checker.position === 55
-  ) { obstacle = true }
-  return obstacle
-}
+  ) {
+    obstacle = true;
+  }
+  return obstacle;
+};
 
 const isLeftDownKickValid = (checker, kickColor) => {
   let isValid = false;
-  if (getBoard[checker.position + 7] && getBoard[checker.position + 14] && getBoard[checker.position + 7].childNodes.length > 0
-    && getBoard[checker.position + 7].firstChild.getAttribute("name") === kickColor
-    && getBoard[checker.position + 14].childNodes.length <= 0
+  if (
+    getBoard[checker.position + 7] &&
+    getBoard[checker.position + 14] &&
+    getBoard[checker.position + 7].childNodes.length > 0 &&
+    getBoard[checker.position + 7].firstChild.getAttribute('name') ===
+      kickColor &&
+    getBoard[checker.position + 14].childNodes.length <= 0
   ) {
     if (!isLeftWallObstacle(checker) && !isBottomWallObstacle(checker)) {
-      isValid = true
+      isValid = true;
     }
   }
   return isValid;
-}
+};
 
 const isRightDownKickValid = (checker, kickColor) => {
   let isValid = false;
-  if (getBoard[checker.position + 9] && getBoard[checker.position + 18] && getBoard[checker.position + 9].childNodes.length > 0
-    && getBoard[checker.position + 9].firstChild.getAttribute("name") === kickColor
-    && getBoard[checker.position + 18].childNodes.length <= 0
+  if (
+    getBoard[checker.position + 9] &&
+    getBoard[checker.position + 18] &&
+    getBoard[checker.position + 9].childNodes.length > 0 &&
+    getBoard[checker.position + 9].firstChild.getAttribute('name') ===
+      kickColor &&
+    getBoard[checker.position + 18].childNodes.length <= 0
   ) {
     if (!isRightWallObstacle(checker) && !isBottomWallObstacle(checker)) {
-      isValid = true
+      isValid = true;
     }
   }
   return isValid;
-}
+};
 
 const isRightUpKickValid = (checker, kickColor) => {
   let isValid = false;
-  if (getBoard[checker.position - 7] && getBoard[checker.position - 14] && getBoard[checker.position - 7].childNodes.length > 0
-    && getBoard[checker.position - 7].firstChild.getAttribute("name") === kickColor
-    && getBoard[checker.position - 14].childNodes.length <= 0
+  if (
+    getBoard[checker.position - 7] &&
+    getBoard[checker.position - 14] &&
+    getBoard[checker.position - 7].childNodes.length > 0 &&
+    getBoard[checker.position - 7].firstChild.getAttribute('name') ===
+      kickColor &&
+    getBoard[checker.position - 14].childNodes.length <= 0
   ) {
     if (!isRightWallObstacle(checker) && !isTopWallObstacle(checker)) {
-      isValid = true
+      isValid = true;
     }
   }
   return isValid;
-}
+};
 
 const isLeftUpKickValid = (checker, kickColor) => {
   let isValid = false;
-  if (getBoard[checker.position - 9] && getBoard[checker.position - 18] && getBoard[checker.position - 9].childNodes.length > 0
-    && getBoard[checker.position - 9].firstChild.getAttribute("name") === kickColor
-    && getBoard[checker.position - 18].childNodes.length <= 0
+  if (
+    getBoard[checker.position - 9] &&
+    getBoard[checker.position - 18] &&
+    getBoard[checker.position - 9].childNodes.length > 0 &&
+    getBoard[checker.position - 9].firstChild.getAttribute('name') ===
+      kickColor &&
+    getBoard[checker.position - 18].childNodes.length <= 0
   ) {
     if (!isLeftWallObstacle(checker) && !isTopWallObstacle(checker)) {
-      isValid = true
+      isValid = true;
     }
   }
   return isValid;
-}
+};
 
 function checkForNecessaryMovies() {
-  mustMoves = []
-  let necessaryMoves = []
-  if (whosMove === "white") {
-    whiteCheckersList.forEach(whiteChecker => {
-      if (isLeftDownKickValid(whiteChecker, "black")) {
-        necessaryMoves.push({ checker: whiteChecker })
+  mustMoves = [];
+  let necessaryMoves = [];
+  if (whosMove === 'white') {
+    whiteCheckersList.forEach((whiteChecker) => {
+      if (isLeftDownKickValid(whiteChecker, 'black')) {
+        necessaryMoves.push({ checker: whiteChecker });
       }
-      if (isRightDownKickValid(whiteChecker, "black")) {
-        necessaryMoves.push({ checker: whiteChecker })
+      if (isRightDownKickValid(whiteChecker, 'black')) {
+        necessaryMoves.push({ checker: whiteChecker });
       }
-      if (isRightUpKickValid(whiteChecker, "black")) {
-        necessaryMoves.push({ checker: whiteChecker })
+      if (isRightUpKickValid(whiteChecker, 'black')) {
+        necessaryMoves.push({ checker: whiteChecker });
       }
-      if (isLeftUpKickValid(whiteChecker, "black")) {
-        necessaryMoves.push({ checker: whiteChecker })
+      if (isLeftUpKickValid(whiteChecker, 'black')) {
+        necessaryMoves.push({ checker: whiteChecker });
       }
-    })
+    });
     if (necessaryMoves.length) {
-      createListOfMoves(necessaryMoves, "black")
+      createListOfMoves(necessaryMoves, 'black');
     }
   }
 
-  if (whosMove === "black") {
-    blackCheckersList.forEach(blackChecker => {
-      if (isLeftDownKickValid(blackChecker, "white")) {
-        necessaryMoves.push({ checker: blackChecker })
+  if (whosMove === 'black') {
+    blackCheckersList.forEach((blackChecker) => {
+      if (isLeftDownKickValid(blackChecker, 'white')) {
+        necessaryMoves.push({ checker: blackChecker });
       }
-      if (isRightDownKickValid(blackChecker, "white")) {
-        necessaryMoves.push({ checker: blackChecker })
+      if (isRightDownKickValid(blackChecker, 'white')) {
+        necessaryMoves.push({ checker: blackChecker });
       }
-      if (isRightUpKickValid(blackChecker, "white")) {
-        necessaryMoves.push({ checker: blackChecker })
+      if (isRightUpKickValid(blackChecker, 'white')) {
+        necessaryMoves.push({ checker: blackChecker });
       }
-      if (isLeftUpKickValid(blackChecker, "white")) {
-        necessaryMoves.push({ checker: blackChecker })
+      if (isLeftUpKickValid(blackChecker, 'white')) {
+        necessaryMoves.push({ checker: blackChecker });
       }
-    })
+    });
     if (necessaryMoves.length) {
-      createListOfMoves(necessaryMoves, "white")
+      createListOfMoves(necessaryMoves, 'white');
     }
   }
-
 }
 
 function createListOfMoves(necessaryMoves, kickColor) {
-
   let unmodifiedChecker;
 
-  const whiteList = whiteCheckersList.map(x => ({ ...x, state: 'w' }))
-  const blackList = blackCheckersList.map(x => ({ ...x, state: 'b' }))
+  const whiteList = whiteCheckersList.map((x) => ({ ...x, state: 'w' }));
+  const blackList = blackCheckersList.map((x) => ({ ...x, state: 'b' }));
 
   let checkersArray;
   let currentCelectedChecker;
 
-  const queue = []
-  const moves = []
+  const queue = [];
+  const moves = [];
 
   let curMov;
 
   if (necessaryMoves.length) {
-
     for (let i = 0; i < necessaryMoves.length; i++) {
-      checkersArray = whiteList.concat(blackList)
-      unmodifiedChecker = necessaryMoves[i]
-      unmodifiedChecker.moves = []
-      currentCelectedChecker = checkersArray.find(x => x.position === unmodifiedChecker.checker?.position)
+      checkersArray = whiteList.concat(blackList);
+      unmodifiedChecker = necessaryMoves[i];
+      unmodifiedChecker.moves = [];
+      currentCelectedChecker = checkersArray.find(
+        (x) => x.position === unmodifiedChecker.checker?.position,
+      );
 
-      queue.push(currentCelectedChecker)
+      queue.push(currentCelectedChecker);
       while (queue.length > 0) {
-        curMov = queue.shift()
+        curMov = queue.shift();
 
-        const plusfourteen = checkersArray.find(x => curMov.position + 14 === x.position)?.state
-        const minusfourteen = checkersArray.find(x => curMov.position - 14 === x.position)?.state
-        const pluseighteen = checkersArray.find(x => curMov.position + 18 === x.position)?.state
-        const minuseighteen = checkersArray.find(x => curMov.position - 18 === x.position)?.state
+        const plusfourteen = checkersArray.find(
+          (x) => curMov.position + 14 === x.position,
+        )?.state;
+        const minusfourteen = checkersArray.find(
+          (x) => curMov.position - 14 === x.position,
+        )?.state;
+        const pluseighteen = checkersArray.find(
+          (x) => curMov.position + 18 === x.position,
+        )?.state;
+        const minuseighteen = checkersArray.find(
+          (x) => curMov.position - 18 === x.position,
+        )?.state;
 
         if (
           // if kick steps are taken
-          isRightWallObstacle(curMov) && plusfourteen && minuseighteen ||
-          isLeftWallObstacle(curMov) && pluseighteen && minusfourteen ||
-          isTopWallObstacle(curMov) && plusfourteen && pluseighteen ||
-          isBottomWallObstacle(curMov) && minusfourteen && minuseighteen ||
-          plusfourteen && minusfourteen && pluseighteen && minuseighteen ||
-          isBottomWallObstacle(curMov) && isRightWallObstacle(curMov) && minuseighteen ||
-          isBottomWallObstacle(curMov) && isLeftWallObstacle(curMov) && minusfourteen ||
-          isTopWallObstacle(curMov) && isRightWallObstacle(curMov) && plusfourteen ||
-          isTopWallObstacle(curMov) && isLeftWallObstacle(curMov) && pluseighteen ||
+          (isRightWallObstacle(curMov) && plusfourteen && minuseighteen) ||
+          (isLeftWallObstacle(curMov) && pluseighteen && minusfourteen) ||
+          (isTopWallObstacle(curMov) && plusfourteen && pluseighteen) ||
+          (isBottomWallObstacle(curMov) && minusfourteen && minuseighteen) ||
+          (plusfourteen && minusfourteen && pluseighteen && minuseighteen) ||
+          (isBottomWallObstacle(curMov) &&
+            isRightWallObstacle(curMov) &&
+            minuseighteen) ||
+          (isBottomWallObstacle(curMov) &&
+            isLeftWallObstacle(curMov) &&
+            minusfourteen) ||
+          (isTopWallObstacle(curMov) &&
+            isRightWallObstacle(curMov) &&
+            plusfourteen) ||
+          (isTopWallObstacle(curMov) &&
+            isLeftWallObstacle(curMov) &&
+            pluseighteen) ||
           // if some steps are taken and some steps are not taken and still not valid moves because two cells acrros are empty
           // with walls
-          isRightWallObstacle(curMov) && !isLeftDownKickValid(curMov, kickColor) && minuseighteen ||
-          isRightWallObstacle(curMov) && plusfourteen && !isLeftUpKickValid(curMov, kickColor) ||
-
-          isLeftWallObstacle(curMov) && !isRightDownKickValid(curMov, kickColor) && minusfourteen ||
-          isLeftWallObstacle(curMov) && pluseighteen && !isRightUpKickValid(curMov, kickColor) ||
-
-          isTopWallObstacle(curMov) && !isLeftDownKickValid(curMov, kickColor) && pluseighteen ||
-          isTopWallObstacle(curMov) && plusfourteen && !isRightDownKickValid(curMov, kickColor) ||
-
-          isBottomWallObstacle(curMov) && !isRightUpKickValid(curMov, kickColor) && minuseighteen ||
-          isBottomWallObstacle(curMov) && minusfourteen && !isLeftUpKickValid(curMov, kickColor) ||
+          (isRightWallObstacle(curMov) &&
+            !isLeftDownKickValid(curMov, kickColor) &&
+            minuseighteen) ||
+          (isRightWallObstacle(curMov) &&
+            plusfourteen &&
+            !isLeftUpKickValid(curMov, kickColor)) ||
+          (isLeftWallObstacle(curMov) &&
+            !isRightDownKickValid(curMov, kickColor) &&
+            minusfourteen) ||
+          (isLeftWallObstacle(curMov) &&
+            pluseighteen &&
+            !isRightUpKickValid(curMov, kickColor)) ||
+          (isTopWallObstacle(curMov) &&
+            !isLeftDownKickValid(curMov, kickColor) &&
+            pluseighteen) ||
+          (isTopWallObstacle(curMov) &&
+            plusfourteen &&
+            !isRightDownKickValid(curMov, kickColor)) ||
+          (isBottomWallObstacle(curMov) &&
+            !isRightUpKickValid(curMov, kickColor) &&
+            minuseighteen) ||
+          (isBottomWallObstacle(curMov) &&
+            minusfourteen &&
+            !isLeftUpKickValid(curMov, kickColor)) ||
           // without walls
           // singles
           // +18
@@ -254,83 +306,144 @@ function createListOfMoves(necessaryMoves, kickColor) {
           // !isLeftDownKickValid(curMov, kickColor)
           // -18
           // !isLeftUpKickValid(curMov, kickColor)
-          !isLeftDownKickValid(curMov, kickColor) && minusfourteen && pluseighteen && minuseighteen ||
-          plusfourteen && !isRightUpKickValid(curMov, kickColor) && pluseighteen && minuseighteen ||
-          plusfourteen && minusfourteen && !isRightDownKickValid(curMov, kickColor) && minuseighteen ||
-          plusfourteen && minusfourteen && pluseighteen && !isLeftUpKickValid(curMov, kickColor) ||
+          (!isLeftDownKickValid(curMov, kickColor) &&
+            minusfourteen &&
+            pluseighteen &&
+            minuseighteen) ||
+          (plusfourteen &&
+            !isRightUpKickValid(curMov, kickColor) &&
+            pluseighteen &&
+            minuseighteen) ||
+          (plusfourteen &&
+            minusfourteen &&
+            !isRightDownKickValid(curMov, kickColor) &&
+            minuseighteen) ||
+          (plusfourteen &&
+            minusfourteen &&
+            pluseighteen &&
+            !isLeftUpKickValid(curMov, kickColor)) ||
           // doubles
           // 1st with all others
-          !isLeftDownKickValid(curMov, kickColor) && !isRightUpKickValid(curMov, kickColor) && pluseighteen && minuseighteen ||
-          !isLeftDownKickValid(curMov, kickColor) && minusfourteen && !isRightDownKickValid(curMov, kickColor) && minuseighteen ||
-          !isLeftDownKickValid(curMov, kickColor) && minusfourteen && pluseighteen && !isLeftUpKickValid(curMov, kickColor) ||
+          (!isLeftDownKickValid(curMov, kickColor) &&
+            !isRightUpKickValid(curMov, kickColor) &&
+            pluseighteen &&
+            minuseighteen) ||
+          (!isLeftDownKickValid(curMov, kickColor) &&
+            minusfourteen &&
+            !isRightDownKickValid(curMov, kickColor) &&
+            minuseighteen) ||
+          (!isLeftDownKickValid(curMov, kickColor) &&
+            minusfourteen &&
+            pluseighteen &&
+            !isLeftUpKickValid(curMov, kickColor)) ||
           // 2nd with all others except 1st
-          plusfourteen && !isRightUpKickValid(curMov, kickColor) && !isRightDownKickValid(curMov, kickColor) && minuseighteen ||
-          plusfourteen && !isRightUpKickValid(curMov, kickColor) && pluseighteen && !isLeftUpKickValid(curMov, kickColor) ||
+          (plusfourteen &&
+            !isRightUpKickValid(curMov, kickColor) &&
+            !isRightDownKickValid(curMov, kickColor) &&
+            minuseighteen) ||
+          (plusfourteen &&
+            !isRightUpKickValid(curMov, kickColor) &&
+            pluseighteen &&
+            !isLeftUpKickValid(curMov, kickColor)) ||
           // 3rd with 4th
-          plusfourteen && minusfourteen && !isRightDownKickValid(curMov, kickColor) && !isLeftUpKickValid(curMov, kickColor)
+          (plusfourteen &&
+            minusfourteen &&
+            !isRightDownKickValid(curMov, kickColor) &&
+            !isLeftUpKickValid(curMov, kickColor))
         ) {
-          const lastCheckerState = checkersArray.find(x => x.position === curMov.position).state.split(',').splice(1)
-          moves.push({ ...unmodifiedChecker, moves: lastCheckerState })
+          const lastCheckerState = checkersArray
+            .find((x) => x.position === curMov.position)
+            .state.split(',')
+            .splice(1);
+          moves.push({ ...unmodifiedChecker, moves: lastCheckerState });
         }
 
         if (isRightDownKickValid(curMov, kickColor)) {
-          console.log("Right down kick valid")
-          const nextCheckerState = checkersArray.find(x => curMov.position + 18 === x.position)?.state
-          const currentCheckerState = checkersArray.find(x => curMov.position === x.position)?.state
+          console.log('Right down kick valid');
+          const nextCheckerState = checkersArray.find(
+            (x) => curMov.position + 18 === x.position,
+          )?.state;
+          const currentCheckerState = checkersArray.find(
+            (x) => curMov.position === x.position,
+          )?.state;
           if (!nextCheckerState) {
-            queue.push({ position: curMov.position + 18 })
-            checkersArray.push({ position: curMov.position + 18, state: currentCheckerState + ',+18' })
+            queue.push({ position: curMov.position + 18 });
+            checkersArray.push({
+              position: curMov.position + 18,
+              state: currentCheckerState + ',+18',
+            });
           }
         }
         if (isLeftDownKickValid(curMov, kickColor)) {
-          console.log("Left down kick valid")
-          const nextCheckerState = checkersArray.find(x => curMov.position + 14 === x.position)?.state
-          const currentCheckerState = checkersArray.find(x => curMov.position === x.position)?.state
+          console.log('Left down kick valid');
+          const nextCheckerState = checkersArray.find(
+            (x) => curMov.position + 14 === x.position,
+          )?.state;
+          const currentCheckerState = checkersArray.find(
+            (x) => curMov.position === x.position,
+          )?.state;
           if (!nextCheckerState) {
-            queue.push({ position: curMov.position + 14 })
-            checkersArray.push({ position: curMov.position + 14, state: currentCheckerState + ',+14' })
+            queue.push({ position: curMov.position + 14 });
+            checkersArray.push({
+              position: curMov.position + 14,
+              state: currentCheckerState + ',+14',
+            });
           }
         }
         if (isRightUpKickValid(curMov, kickColor)) {
-          console.log("Right up kick valid")
-          const nextCheckerState = checkersArray.find(x => curMov.position - 14 === x.position)?.state
-          const currentCheckerState = checkersArray.find(x => curMov.position === x.position)?.state
+          console.log('Right up kick valid');
+          const nextCheckerState = checkersArray.find(
+            (x) => curMov.position - 14 === x.position,
+          )?.state;
+          const currentCheckerState = checkersArray.find(
+            (x) => curMov.position === x.position,
+          )?.state;
           if (!nextCheckerState) {
-            queue.push({ position: curMov.position - 14 })
-            checkersArray.push({ position: curMov.position - 14, state: currentCheckerState + ',-14' })
+            queue.push({ position: curMov.position - 14 });
+            checkersArray.push({
+              position: curMov.position - 14,
+              state: currentCheckerState + ',-14',
+            });
           }
         }
         if (isLeftUpKickValid(curMov, kickColor)) {
-          console.log("Left up kick valid")
-          const nextCheckerState = checkersArray.find(x => curMov.position - 18 === x.position)?.state
-          const currentCheckerState = checkersArray.find(x => curMov.position === x.position)?.state
+          console.log('Left up kick valid');
+          const nextCheckerState = checkersArray.find(
+            (x) => curMov.position - 18 === x.position,
+          )?.state;
+          const currentCheckerState = checkersArray.find(
+            (x) => curMov.position === x.position,
+          )?.state;
           if (!nextCheckerState) {
-            queue.push({ position: curMov.position - 18 })
-            checkersArray.push({ position: curMov.position - 18, state: currentCheckerState + ',-18' })
+            queue.push({ position: curMov.position - 18 });
+            checkersArray.push({
+              position: curMov.position - 18,
+              state: currentCheckerState + ',-18',
+            });
           }
         }
       }
     }
   }
-  mustMoves = moves
+  mustMoves = moves;
 }
 
 function growDepth() {
   const obj = {
     id: 1,
-    name: "one",
+    name: 'one',
     next: {
       id: 2,
-      name: "two",
+      name: 'two',
       next: {
         id: 3,
-        name: "three"
-      }
-    }
-  }
+        name: 'three',
+      },
+    },
+  };
   let head = obj;
   while (head != null) {
-    head = head.next
+    head = head.next;
   }
 }
 
@@ -560,96 +673,177 @@ function blackQueenMaking(num, coord) {
 }
 
 function updateCheckersArray(arr, from, to) {
-  return arr.map(x => x.position === from ? { ...x, position: to } : x)
+  return arr.map((x) => (x.position === from ? { ...x, position: to } : x));
 }
 
 function removeCheckerFromArray(arr, pos) {
-  return arr.filter(x => x.position !== pos)
+  return arr.filter((x) => x.position !== pos);
 }
 
 function isMoveMadeWithOrWitoutAMustMove(movingToPosition) {
   if (selectedChecker.position) {
     if (!mustMoves.length) {
-      return
+      return;
     }
-    const findSelectedChecker = mustMoves.find(x => x.checker.position === selectedChecker.position)
-    if (findSelectedChecker && findSelectedChecker.hasOwnProperty("moves") && movingToPosition === eval(selectedChecker.position + findSelectedChecker.moves[0])) {
-      const removePositionNumber = findSelectedChecker.moves[0].slice(1) / 2
-      const formatedRemovePosition = findSelectedChecker.moves[0].charAt(0) + removePositionNumber
-      const actualRemovePosition = eval(findSelectedChecker.checker.position + formatedRemovePosition)
+    const findSelectedChecker = mustMoves.find(
+      (x) => x.checker.position === selectedChecker.position,
+    );
+    if (
+      findSelectedChecker &&
+      findSelectedChecker.hasOwnProperty('moves') &&
+      movingToPosition ===
+        eval(selectedChecker.position + findSelectedChecker.moves[0])
+    ) {
+      const removePositionNumber = findSelectedChecker.moves[0].slice(1) / 2;
+      const formatedRemovePosition =
+        findSelectedChecker.moves[0].charAt(0) + removePositionNumber;
+      const actualRemovePosition = eval(
+        findSelectedChecker.checker.position + formatedRemovePosition,
+      );
       if (whosMove === 'white') {
-        whiteCheckersList = updateCheckersArray(whiteCheckersList, selectedChecker.position, movingToPosition)
-        blackCheckersList = removeCheckerFromArray(blackCheckersList, actualRemovePosition)
+        whiteCheckersList = updateCheckersArray(
+          whiteCheckersList,
+          selectedChecker.position,
+          movingToPosition,
+        );
+        blackCheckersList = removeCheckerFromArray(
+          blackCheckersList,
+          actualRemovePosition,
+        );
       }
       if (whosMove === 'black') {
-        blackCheckersList = updateCheckersArray(blackCheckersList, selectedChecker.position, movingToPosition)
-        whiteCheckersList = removeCheckerFromArray(whiteCheckersList, actualRemovePosition)
+        blackCheckersList = updateCheckersArray(
+          blackCheckersList,
+          selectedChecker.position,
+          movingToPosition,
+        );
+        whiteCheckersList = removeCheckerFromArray(
+          whiteCheckersList,
+          actualRemovePosition,
+        );
       }
-      return
+      return;
     }
-    const colorMoving = whosMove
-    const checkerSelected = { ...selectedChecker }
+    const colorMoving = whosMove;
+    const checkerSelected = { ...selectedChecker };
 
-    if (findSelectedChecker && findSelectedChecker.hasOwnProperty("moves") && movingToPosition !== eval(selectedChecker.position + findSelectedChecker.moves[0])) {
-      getBoard[mustMoves[0].checker.position].style.backgroundColor = "red"
-      getBoard[eval(mustMoves[0].checker.position + mustMoves[0].moves[0])].style.backgroundColor = "red"
+    if (
+      findSelectedChecker &&
+      findSelectedChecker.hasOwnProperty('moves') &&
+      movingToPosition !==
+        eval(selectedChecker.position + findSelectedChecker.moves[0])
+    ) {
+      getBoard[mustMoves[0].checker.position].style.backgroundColor = 'red';
+      getBoard[
+        eval(mustMoves[0].checker.position + mustMoves[0].moves[0])
+      ].style.backgroundColor = 'red';
       if (mustMoves.length > 1) {
         function proceedRemoval() {
           if (checkerSelected.position === mustMoves[0].checker.position) {
-            getBoard[movingToPosition].removeChild(getBoard[movingToPosition].firstChild)
+            getBoard[movingToPosition].removeChild(
+              getBoard[movingToPosition].firstChild,
+            );
             if (colorMoving === 'white') {
-              whiteCheckersList = removeCheckerFromArray(whiteCheckersList, movingToPosition)
+              whiteCheckersList = removeCheckerFromArray(
+                whiteCheckersList,
+                movingToPosition,
+              );
             }
             if (colorMoving === 'black') {
-              blackCheckersList = removeCheckerFromArray(blackCheckersList, movingToPosition)
+              blackCheckersList = removeCheckerFromArray(
+                blackCheckersList,
+                movingToPosition,
+              );
             }
           } else {
-            getBoard[mustMoves[0].checker.position].removeChild(getBoard[mustMoves[0].checker.position].firstChild)
+            getBoard[mustMoves[0].checker.position].removeChild(
+              getBoard[mustMoves[0].checker.position].firstChild,
+            );
             if (colorMoving === 'white') {
-              whiteCheckersList = removeCheckerFromArray(whiteCheckersList, mustMoves[0].checker.position)
+              whiteCheckersList = removeCheckerFromArray(
+                whiteCheckersList,
+                mustMoves[0].checker.position,
+              );
             }
             if (colorMoving === 'black') {
-              blackCheckersList = removeCheckerFromArray(blackCheckersList, mustMoves[0].checker.position)
+              blackCheckersList = removeCheckerFromArray(
+                blackCheckersList,
+                mustMoves[0].checker.position,
+              );
             }
           }
-          getBoard[mustMoves[0].checker.position].style.backgroundColor = 'rgb(166, 195, 111)'
-          getBoard[eval(mustMoves[0].checker.position + mustMoves[0].moves[0])].style.backgroundColor = 'rgb(166, 195, 111)'
+          getBoard[mustMoves[0].checker.position].style.backgroundColor =
+            'rgb(166, 195, 111)';
+          getBoard[
+            eval(mustMoves[0].checker.position + mustMoves[0].moves[0])
+          ].style.backgroundColor = 'rgb(166, 195, 111)';
         }
-        const timer = setTimeout(proceedRemoval, 2000)
-        return
+        const timer = setTimeout(proceedRemoval, 2000);
+        return;
       }
       function proceedRemoval() {
         if (colorMoving === 'white') {
-          whiteCheckersList = removeCheckerFromArray(whiteCheckersList, movingToPosition)
+          whiteCheckersList = removeCheckerFromArray(
+            whiteCheckersList,
+            movingToPosition,
+          );
         }
         if (colorMoving === 'black') {
-          blackCheckersList = removeCheckerFromArray(blackCheckersList, movingToPosition)
+          blackCheckersList = removeCheckerFromArray(
+            blackCheckersList,
+            movingToPosition,
+          );
         }
-        getBoard[mustMoves[0].checker.position].style.backgroundColor = 'rgb(166, 195, 111)'
-        getBoard[eval(mustMoves[0].checker.position + mustMoves[0].moves[0])].style.backgroundColor = 'rgb(166, 195, 111)'
-        getBoard[movingToPosition].removeChild(getBoard[movingToPosition].firstChild)
+        getBoard[mustMoves[0].checker.position].style.backgroundColor =
+          'rgb(166, 195, 111)';
+        getBoard[
+          eval(mustMoves[0].checker.position + mustMoves[0].moves[0])
+        ].style.backgroundColor = 'rgb(166, 195, 111)';
+        getBoard[movingToPosition].removeChild(
+          getBoard[movingToPosition].firstChild,
+        );
       }
-      const timer = setTimeout(proceedRemoval, 2000)
-      return
+      const timer = setTimeout(proceedRemoval, 2000);
+      return;
     }
-    getBoard[mustMoves[0].checker.position].style.backgroundColor = "red"
-    getBoard[eval(mustMoves[0].checker.position + mustMoves[0].moves[0])].style.backgroundColor = "red"
+    getBoard[mustMoves[0].checker.position].style.backgroundColor = 'red';
+    getBoard[
+      eval(mustMoves[0].checker.position + mustMoves[0].moves[0])
+    ].style.backgroundColor = 'red';
     function proceedRemoval() {
       if (colorMoving === 'white') {
-        whiteCheckersList = updateCheckersArray(whiteCheckersList, selectedChecker.position, movingToPosition)
-        whiteCheckersList = removeCheckerFromArray(whiteCheckersList, mustMoves[0].checker.position)
+        whiteCheckersList = updateCheckersArray(
+          whiteCheckersList,
+          selectedChecker.position,
+          movingToPosition,
+        );
+        whiteCheckersList = removeCheckerFromArray(
+          whiteCheckersList,
+          mustMoves[0].checker.position,
+        );
       }
       if (colorMoving === 'black') {
-        blackCheckersList = updateCheckersArray(blackCheckersList, selectedChecker.position, movingToPosition)
-        blackCheckersList = removeCheckerFromArray(blackCheckersList, mustMoves[0].checker.position)
+        blackCheckersList = updateCheckersArray(
+          blackCheckersList,
+          selectedChecker.position,
+          movingToPosition,
+        );
+        blackCheckersList = removeCheckerFromArray(
+          blackCheckersList,
+          mustMoves[0].checker.position,
+        );
       }
-      getBoard[mustMoves[0].checker.position].style.backgroundColor = 'rgb(166, 195, 111)'
-      getBoard[eval(mustMoves[0].checker.position + mustMoves[0].moves[0])].style.backgroundColor = 'rgb(166, 195, 111)'
-      getBoard[mustMoves[0].checker.position].removeChild(getBoard[mustMoves[0].checker.position].firstChild)
+      getBoard[mustMoves[0].checker.position].style.backgroundColor =
+        'rgb(166, 195, 111)';
+      getBoard[
+        eval(mustMoves[0].checker.position + mustMoves[0].moves[0])
+      ].style.backgroundColor = 'rgb(166, 195, 111)';
+      getBoard[mustMoves[0].checker.position].removeChild(
+        getBoard[mustMoves[0].checker.position].firstChild,
+      );
     }
-    const timer = setTimeout(proceedRemoval, 2000)
+    const timer = setTimeout(proceedRemoval, 2000);
   }
-
 
   // {
   //   "checker": {
@@ -660,7 +854,6 @@ function isMoveMadeWithOrWitoutAMustMove(movingToPosition) {
   //       "+18"
   //   ]
   // }
-
 }
 
 const checkerMoveClickListener = () => {
@@ -682,7 +875,7 @@ const checkerMoveClickListener = () => {
               createWhiteQueen,
             );
           //Check for any necessary moves
-          checkForNecessaryMovies()
+          checkForNecessaryMovies();
           // White checker moving down left
           if (
             i === selectedChecker.position + 7 &&
@@ -706,7 +899,7 @@ const checkerMoveClickListener = () => {
             whiteQueenMaking(7, i);
 
             // Move validity
-            isMoveMadeWithOrWitoutAMustMove(i)
+            isMoveMadeWithOrWitoutAMustMove(i);
 
             // Resetting moves
             selectedChecker.color = '';
@@ -737,7 +930,7 @@ const checkerMoveClickListener = () => {
             whiteQueenMaking(9, i);
 
             // Move validity
-            isMoveMadeWithOrWitoutAMustMove(i)
+            isMoveMadeWithOrWitoutAMustMove(i);
 
             //Resetting moves
             selectedChecker.color = '';
@@ -767,7 +960,7 @@ const checkerMoveClickListener = () => {
             whiteQueenMaking(14, i);
 
             // Move validity
-            isMoveMadeWithOrWitoutAMustMove(i)
+            isMoveMadeWithOrWitoutAMustMove(i);
 
             //Resetting moves
             selectedChecker.color = '';
@@ -798,7 +991,7 @@ const checkerMoveClickListener = () => {
             whiteQueenMaking(18, i);
 
             // Move validity
-            isMoveMadeWithOrWitoutAMustMove(i)
+            isMoveMadeWithOrWitoutAMustMove(i);
 
             //Resetting moves
             selectedChecker.color = '';
@@ -827,7 +1020,7 @@ const checkerMoveClickListener = () => {
             );
 
             // Move validity
-            isMoveMadeWithOrWitoutAMustMove(i)
+            isMoveMadeWithOrWitoutAMustMove(i);
 
             // Resetting moves
             selectedChecker.color = '';
@@ -856,7 +1049,7 @@ const checkerMoveClickListener = () => {
             );
 
             // Move validity
-            isMoveMadeWithOrWitoutAMustMove(i)
+            isMoveMadeWithOrWitoutAMustMove(i);
 
             // Resetting moves
             selectedChecker.color = '';
@@ -880,7 +1073,7 @@ const checkerMoveClickListener = () => {
               createBlackQueen,
             );
           //Check for any necessary moves
-          checkForNecessaryMovies()
+          checkForNecessaryMovies();
           // Black checker moving up right
           if (
             i === selectedChecker.position - 7 &&
@@ -905,7 +1098,7 @@ const checkerMoveClickListener = () => {
             blackQueenMaking(-7, i);
 
             // Move validity
-            isMoveMadeWithOrWitoutAMustMove(i)
+            isMoveMadeWithOrWitoutAMustMove(i);
 
             //Resetting moves
             selectedChecker.color = '';
@@ -937,7 +1130,7 @@ const checkerMoveClickListener = () => {
             blackQueenMaking(-9, i);
 
             // Move validity
-            isMoveMadeWithOrWitoutAMustMove(i)
+            isMoveMadeWithOrWitoutAMustMove(i);
 
             // Resetting moves
             selectedChecker.color = '';
@@ -968,7 +1161,7 @@ const checkerMoveClickListener = () => {
             blackQueenMaking(-14, i);
 
             // Move validity
-            isMoveMadeWithOrWitoutAMustMove(i)
+            isMoveMadeWithOrWitoutAMustMove(i);
 
             // Resetting moves
             selectedChecker.color = '';
@@ -999,7 +1192,7 @@ const checkerMoveClickListener = () => {
             blackQueenMaking(-18, i);
 
             // Move validity
-            isMoveMadeWithOrWitoutAMustMove(i)
+            isMoveMadeWithOrWitoutAMustMove(i);
 
             // Resetting moves
             selectedChecker.color = '';
@@ -1028,7 +1221,7 @@ const checkerMoveClickListener = () => {
             );
 
             // Move validity
-            isMoveMadeWithOrWitoutAMustMove(i)
+            isMoveMadeWithOrWitoutAMustMove(i);
 
             // Resetting moves
             selectedChecker.color = '';
@@ -1057,7 +1250,7 @@ const checkerMoveClickListener = () => {
             );
 
             // Move validity
-            isMoveMadeWithOrWitoutAMustMove(i)
+            isMoveMadeWithOrWitoutAMustMove(i);
 
             // Resetting moves
             selectedChecker.color = '';
