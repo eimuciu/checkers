@@ -532,19 +532,67 @@ const createCell = (checker, color) => {
   return cell;
 };
 
+// const createBoard = () => {
+//   for (let i = 0; i < rows; i++) {
+//     for (let y = 0; y < columns; y++) {
+//       if (i === 0 || i === 1 || i === 2) {
+//         if ((i % 2 === 0) & (y % 2 === 1)) {
+//           board.appendChild(createCell(createWhiteChecker(), '#A6C36F'));
+//           whiteCheckersList.push({
+//             isQueen: false,
+//             position: i === 0 ? i * 8 + y : i === 2 ? i * 8 + y : null,
+//           });
+//         } else if ((i % 2 === 1) & (y % 2 === 0)) {
+//           board.appendChild(createCell(createWhiteChecker(), '#A6C36F'));
+//           whiteCheckersList.push({
+//             isQueen: false,
+//             position: i === 1 ? i * 8 + y : null,
+//           });
+//         } else {
+//           board.appendChild(createCell());
+//         }
+//       } else if (i === rows - 1 || i === rows - 2 || i === rows - 3) {
+//         if ((i % 2 === 0) & (y % 2 === 1)) {
+//           board.appendChild(createCell(createBlackChecker(), '#A6C36F'));
+//           blackCheckersList.push({
+//             isQueen: false,
+//             position: i === rows - 2 ? i * 8 + y : null,
+//           });
+//         } else if ((i % 2 === 1) & (y % 2 === 0)) {
+//           board.appendChild(createCell(createBlackChecker(), '#A6C36F'));
+//           blackCheckersList.push({
+//             isQueen: false,
+//             position: i === rows - 1 ? i * 8 + y : rows - 3 ? i * 8 + y : null,
+//           });
+//         } else {
+//           board.appendChild(createCell());
+//         }
+//       } else {
+//         if ((i % 2 === 0) & (y % 2 === 1)) {
+//           board.appendChild(createCell(null, '#A6C36F'));
+//         } else if ((i % 2 === 1) & (y % 2 === 0)) {
+//           board.appendChild(createCell(null, '#A6C36F'));
+//         } else {
+//           board.appendChild(createCell());
+//         }
+//       }
+//     }
+//   }
+// };
+
 const createBoard = () => {
   for (let i = 0; i < rows; i++) {
     for (let y = 0; y < columns; y++) {
       if (i === 0 || i === 1 || i === 2) {
         if ((i % 2 === 0) & (y % 2 === 1)) {
-          board.appendChild(createCell(createWhiteChecker(), '#A6C36F'));
-          whiteCheckersList.push({
-            isQueen: false,
-            position: i === 0 ? i * 8 + y : i === 2 ? i * 8 + y : null,
-          });
+          board.appendChild(createCell(null, '#A6C36F'));
+          // whiteCheckersList.push({
+          //   isQueen: false,
+          //   position: i === 0 ? i * 8 + y : i === 2 ? i * 8 + y : null,
+          // });
         } else if ((i % 2 === 1) & (y % 2 === 0)) {
-          board.appendChild(createCell(createWhiteChecker(), '#A6C36F'));
-          whiteCheckersList.push({
+          board.appendChild(createCell(createBlackChecker(), '#A6C36F'));
+          blackCheckersList.push({
             isQueen: false,
             position: i === 1 ? i * 8 + y : null,
           });
@@ -553,17 +601,27 @@ const createBoard = () => {
         }
       } else if (i === rows - 1 || i === rows - 2 || i === rows - 3) {
         if ((i % 2 === 0) & (y % 2 === 1)) {
-          board.appendChild(createCell(createBlackChecker(), '#A6C36F'));
-          blackCheckersList.push({
-            isQueen: false,
-            position: i === rows - 2 ? i * 8 + y : null,
-          });
+          board.appendChild(createCell(null, '#A6C36F'));
+          // blackCheckersList.push({
+          //   isQueen: false,
+          //   position: i === rows - 2 ? i * 8 + y : null,
+          // });
         } else if ((i % 2 === 1) & (y % 2 === 0)) {
-          board.appendChild(createCell(createBlackChecker(), '#A6C36F'));
-          blackCheckersList.push({
-            isQueen: false,
-            position: i === rows - 1 ? i * 8 + y : rows - 3 ? i * 8 + y : null,
-          });
+          if (y === 2) {
+            board.appendChild(createCell(createWhiteQueen(), '#A6C36F'));
+            whiteCheckersList.push({
+              isQueen: true,
+              position:
+                i === rows - 1 ? i * 8 + y : rows - 3 ? i * 8 + y : null,
+            });
+          } else {
+            board.appendChild(createCell(null, '#A6C36F'));
+          }
+
+          // blackCheckersList.push({
+          //   isQueen: false,
+          //   position: i === rows - 1 ? i * 8 + y : rows - 3 ? i * 8 + y : null,
+          // });
         } else {
           board.appendChild(createCell());
         }

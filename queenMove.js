@@ -159,35 +159,67 @@ function queenMove(
     availableDownLeftMoves.push(i);
   }
 
+  const removeQueenFromBoard = (availableMoves) => {
+    if (!availableMoves.includes(moveCoordinate)) {
+      getBoard[availableMoves[0]].style.backgroundColor = 'red';
+      getBoard[activeChecker.position].style.backgroundColor = 'red';
+    }
+  };
+
   if (
     (allowedDownLeftKicks.length &&
       !availableDownLeftMoves.includes(moveCoordinate) &&
       moveCoordinate !== activeChecker.position) ||
+    (allowedDownLeftKicks.length &&
+      availableDownLeftMoves.includes(moveCoordinate) &&
+      moveCoordinate < allowedDownLeftKicks[0])
+  ) {
+    const availableMoves = availableDownLeftMoves.filter(
+      (x) => x > allowedDownLeftKicks[0],
+    );
+    removeQueenFromBoard(availableMoves);
+  }
+
+  if (
     (allowedDownRightKicks.length &&
       !availableDownRightMoves.includes(moveCoordinate) &&
       moveCoordinate !== activeChecker.position) ||
+    (allowedDownRightKicks.length &&
+      availableDownRightMoves.includes(moveCoordinate) &&
+      moveCoordinate < allowedDownRightKicks[0])
+  ) {
+    const availableMoves = availableDownRightMoves.filter(
+      (x) => x > allowedDownRightKicks[0],
+    );
+    removeQueenFromBoard(availableMoves);
+  }
+
+  if (
     (allowedUpLeftKicks.length &&
       !availableUpLeftMoves.includes(moveCoordinate) &&
       moveCoordinate !== activeChecker.position) ||
+    (allowedUpLeftKicks.length &&
+      availableUpLeftMoves.includes(moveCoordinate) &&
+      moveCoordinate > allowedUpLeftKicks[0])
+  ) {
+    const availableMoves = availableUpLeftMoves.filter(
+      (x) => x < allowedUpLeftKicks[0],
+    );
+    removeQueenFromBoard(availableMoves);
+  }
+
+  if (
     (allowedUpRightKicks.length &&
       !allowedUpRightKicks.includes(moveCoordinate) &&
       moveCoordinate !== activeChecker.position) ||
-    //   Includes correct direction but not kicking a checker so should be removed
-    (allowedDownLeftKicks.length &&
-      availableDownLeftMoves.includes(moveCoordinate) &&
-      moveCoordinate < allowedDownLeftKicks[0]) ||
-    (allowedDownRightKicks.length &&
-      availableDownRightMoves.includes(moveCoordinate) &&
-      moveCoordinate < allowedDownRightKicks[0]) ||
-    (allowedUpLeftKicks.length &&
-      availableUpLeftMoves.includes(moveCoordinate) &&
-      moveCoordinate > allowedUpLeftKicks[0]) ||
     (allowedUpRightKicks.length &&
       availableUpRightMoves.includes(moveCoordinate) &&
       moveCoordinate > allowedUpRightKicks[0])
   ) {
-    // console.log('queen position', moveCoordinate);
-    // reikia pazymeti lentoje bent viena butina ejima ir pasalinti karaliene nuo lentos
+    const availableMoves = availableUpRightMoves.filter(
+      (x) => x < allowedUpRightKicks[0],
+    );
+    removeQueenFromBoard(availableMoves);
   }
 
   // Make left up move with a queen
