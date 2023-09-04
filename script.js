@@ -1,5 +1,5 @@
 // ***todos***
-// Atupdating whiteCheckersList ir blackCheckersList atitinkamai, nes buguojasi
+// Kai yra du galimi kirtimai, bet su vienu tarkim paeini tiesiog i sona galimai pazymi sekanti kirtimo varianta, bet istrina saske su kuria buvo paeita i sona
 
 const body = document.body;
 body.style.padding = '50px';
@@ -867,21 +867,28 @@ function isMoveMadeWithOrWitoutAMustMove(movingToPosition) {
       console.log("White checkers", whiteCheckersList)
       return
     }
-
-    // if (findSelectedChecker && findSelectedChecker.hasOwnProperty("moves") && movingToPosition !== eval(selectedChecker.position + findSelectedChecker.moves[0])) {
-    //   getBoard[mustMoves[0].checker.position].style.backgroundColor = "red"
-    //   getBoard[eval(mustMoves[0].checker.position + mustMoves[0].moves[0])].style.backgroundColor = "red"
-
-    //   function proceedRemoval() {
-    //     getBoard[mustMoves[0].checker.position].style.backgroundColor = 'rgb(166, 195, 111)'
-    //     getBoard[eval(mustMoves[0].checker.position + mustMoves[0].moves[0])].style.backgroundColor = 'rgb(166, 195, 111)'
-    //     getBoard[movingToPosition].removeChild(getBoard[movingToPosition].firstChild)
-    //   }
-    //   const timer = setTimeout(proceedRemoval, 2000)
-    //   return
-    // }
-
     const colorMoving = whosMove
+
+    if (findSelectedChecker && findSelectedChecker.hasOwnProperty("moves") && movingToPosition !== eval(selectedChecker.position + findSelectedChecker.moves[0])) {
+      getBoard[mustMoves[0].checker.position].style.backgroundColor = "red"
+      getBoard[eval(mustMoves[0].checker.position + mustMoves[0].moves[0])].style.backgroundColor = "red"
+
+      function proceedRemoval() {
+        if (colorMoving === 'white') {
+          whiteCheckersList = removeCheckerFromArray(whiteCheckersList, movingToPosition)
+          console.log("whiteCheckersList: ", whiteCheckersList)
+        }
+        if (colorMoving === 'black') {
+          blackCheckersList = removeCheckerFromArray(blackCheckersList, movingToPosition)
+          console.log("blackCheckersList: ", blackCheckersList)
+        }
+        getBoard[mustMoves[0].checker.position].style.backgroundColor = 'rgb(166, 195, 111)'
+        getBoard[eval(mustMoves[0].checker.position + mustMoves[0].moves[0])].style.backgroundColor = 'rgb(166, 195, 111)'
+        getBoard[movingToPosition].removeChild(getBoard[movingToPosition].firstChild)
+      }
+      const timer = setTimeout(proceedRemoval, 2000)
+      return
+    }
 
     getBoard[mustMoves[0].checker.position].style.backgroundColor = "red"
     getBoard[eval(mustMoves[0].checker.position + mustMoves[0].moves[0])].style.backgroundColor = "red"
