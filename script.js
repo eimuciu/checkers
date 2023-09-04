@@ -1,7 +1,5 @@
 // ***todos***
-// Padaryt kad kirtimas butinas
-// Padaryt keleta galimu kirtimu
-// Nepamirst, kad dabar skaiciuoja ejimus tik pirmam masyvo dalyviui
+// Atupdating whiteCheckersList ir blackCheckersList atitinkamai, nes buguojasi
 
 const body = document.body;
 body.style.padding = '50px';
@@ -838,32 +836,68 @@ function queenMove(
   }
 }
 
+function updateCheckersArray(arr, from, to) {
+  return arr.map(x => x.position === from ? { ...x, position: to } : x)
+}
+
+function removeCheckerFromArray(arr, pos) {
+  return arr.filter(x => x.position !== pos)
+}
+
 function isMoveMadeWithOrWitoutAMustMove(movingToPosition) {
   if (selectedChecker.position) {
     if (!mustMoves.length) {
       return
     }
+
     const findSelectedChecker = mustMoves.find(x => x.checker.position === selectedChecker.position)
     if (findSelectedChecker && findSelectedChecker.hasOwnProperty("moves") && movingToPosition === eval(selectedChecker.position + findSelectedChecker.moves[0])) {
+      const removePositionNumber = findSelectedChecker.moves[0].slice(1) / 2
+      const formatedRemovePosition = findSelectedChecker.moves[0].charAt(0) + removePositionNumber
+      const actualRemovePosition = eval(findSelectedChecker.checker.position + formatedRemovePosition)
+      if (whosMove === 'white') {
+        whiteCheckersList = updateCheckersArray(whiteCheckersList, selectedChecker.position, movingToPosition)
+        blackCheckersList = removeCheckerFromArray(blackCheckersList, actualRemovePosition)
+      }
+      if (whosMove === 'black') {
+        blackCheckersList = updateCheckersArray(blackCheckersList, selectedChecker.position, movingToPosition)
+        whiteCheckersList = removeCheckerFromArray(whiteCheckersList, actualRemovePosition)
+      }
+      console.log("Black checkers", blackCheckersList)
+      console.log("White checkers", whiteCheckersList)
       return
     }
 
-    if (findSelectedChecker && findSelectedChecker.hasOwnProperty("moves") && movingToPosition !== eval(selectedChecker.position + findSelectedChecker.moves[0])) {
-      getBoard[mustMoves[0].checker.position].style.backgroundColor = "red"
-      getBoard[eval(mustMoves[0].checker.position + mustMoves[0].moves[0])].style.backgroundColor = "red"
-      function proceedRemoval() {
-        getBoard[mustMoves[0].checker.position].style.backgroundColor = 'rgb(166, 195, 111)'
-        getBoard[eval(mustMoves[0].checker.position + mustMoves[0].moves[0])].style.backgroundColor = 'rgb(166, 195, 111)'
-        getBoard[movingToPosition].removeChild(getBoard[movingToPosition].firstChild)
-      }
-      const timer = setTimeout(proceedRemoval, 2000)
-      return
-    }
+    // if (findSelectedChecker && findSelectedChecker.hasOwnProperty("moves") && movingToPosition !== eval(selectedChecker.position + findSelectedChecker.moves[0])) {
+    //   getBoard[mustMoves[0].checker.position].style.backgroundColor = "red"
+    //   getBoard[eval(mustMoves[0].checker.position + mustMoves[0].moves[0])].style.backgroundColor = "red"
+
+    //   function proceedRemoval() {
+    //     getBoard[mustMoves[0].checker.position].style.backgroundColor = 'rgb(166, 195, 111)'
+    //     getBoard[eval(mustMoves[0].checker.position + mustMoves[0].moves[0])].style.backgroundColor = 'rgb(166, 195, 111)'
+    //     getBoard[movingToPosition].removeChild(getBoard[movingToPosition].firstChild)
+    //   }
+    //   const timer = setTimeout(proceedRemoval, 2000)
+    //   return
+    // }
+
+    const colorMoving = whosMove
 
     getBoard[mustMoves[0].checker.position].style.backgroundColor = "red"
     getBoard[eval(mustMoves[0].checker.position + mustMoves[0].moves[0])].style.backgroundColor = "red"
 
     function proceedRemoval() {
+      if (colorMoving === 'white') {
+        whiteCheckersList = updateCheckersArray(whiteCheckersList, selectedChecker.position, movingToPosition)
+        whiteCheckersList = removeCheckerFromArray(whiteCheckersList, mustMoves[0].checker.position)
+        console.log("whiteCheckersList: ", whiteCheckersList)
+      }
+      if (colorMoving === 'black') {
+        blackCheckersList = updateCheckersArray(blackCheckersList, selectedChecker.position, movingToPosition)
+        blackCheckersList = removeCheckerFromArray(blackCheckersList, mustMoves[0].checker.position)
+        console.log("blackCheckersList: ", blackCheckersList)
+      }
+
       getBoard[mustMoves[0].checker.position].style.backgroundColor = 'rgb(166, 195, 111)'
       getBoard[eval(mustMoves[0].checker.position + mustMoves[0].moves[0])].style.backgroundColor = 'rgb(166, 195, 111)'
       getBoard[mustMoves[0].checker.position].removeChild(getBoard[mustMoves[0].checker.position].firstChild)
@@ -888,9 +922,6 @@ function isMoveMadeWithOrWitoutAMustMove(movingToPosition) {
 const checkerMoveClickListener = () => {
   for (let i = 0; i < getBoard.length; i++) {
     getBoard[i].addEventListener('click', () => {
-      mustMoves = []
-      checkForNecessaryMovies()
-      console.log(mustMoves)
       if (selectedChecker.position) {
         // White checker move
         if (selectedChecker.color === 'white' && whosMove === 'white') {
@@ -906,6 +937,9 @@ const checkerMoveClickListener = () => {
               'white',
               createWhiteQueen,
             );
+          //Check for any necessary moves
+          checkForNecessaryMovies()
+          console.log(mustMoves)
           // White checker moving down left
           if (
             i === selectedChecker.position + 7 &&
@@ -1102,6 +1136,8 @@ const checkerMoveClickListener = () => {
               'black',
               createBlackQueen,
             );
+          //Check for any necessary moves
+          checkForNecessaryMovies()
           // Black checker moving up right
           if (
             i === selectedChecker.position - 7 &&
