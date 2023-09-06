@@ -1,27 +1,14 @@
-function queenMove(
-  activeChecker,
-  moveCoordinate,
-  checkersList,
-  checkerColor,
-  queenMaking,
-) {
-  const queenPosition = activeChecker.position;
-
+function calculateQueenMoves(activeChecker, checkerColor) {
   // All available moves
   const availableUpLeftMoves = [];
-  const availableDownRightMoves = [];
   const availableUpRightMoves = [];
+  const availableDownRightMoves = [];
   const availableDownLeftMoves = [];
   // All available kicks
   const allowedUpLeftKicks = [];
-  const allowedDownRightKicks = [];
   const allowedUpRightKicks = [];
+  const allowedDownRightKicks = [];
   const allowedDownLeftKicks = [];
-
-  console.log('Allowed up left kicks: ', allowedUpLeftKicks);
-  console.log('Allowed down right kicks:', allowedDownRightKicks);
-  console.log('Allowed up right kicks:', allowedUpRightKicks);
-  console.log('Allowed down left kicks:', allowedDownLeftKicks);
 
   // Wall coordinates
   const leftWall = [8, 24, 40, 56];
@@ -159,10 +146,98 @@ function queenMove(
     availableDownLeftMoves.push(i);
   }
 
+  let mustDownLeftKicks = [];
+  let mustDownRightKicks = [];
+  let mustUpLeftKicks = [];
+  let mustUpRightKicks = [];
+
+  if (availableDownLeftMoves.length && allowedDownLeftKicks.length) {
+    // Must down left kicks
+    mustDownLeftKicks = availableDownLeftMoves.filter(
+      (x) => x > allowedDownLeftKicks[0],
+    );
+  }
+
+  if (availableDownRightMoves.length && allowedDownRightKicks.length) {
+    // Must down right kicks
+    mustDownRightKicks = availableDownRightMoves.filter(
+      (x) => x > allowedDownRightKicks[0],
+    );
+  }
+
+  if (availableUpLeftMoves.length && allowedUpLeftKicks.length) {
+    // Must up left kicks
+    mustUpLeftKicks = availableUpLeftMoves.filter(
+      (x) => x < allowedUpLeftKicks[0],
+    );
+  }
+
+  if (availableUpRightMoves.length && allowedUpRightKicks.length) {
+    // Must up right kicks
+    mustUpRightKicks = availableUpRightMoves.filter(
+      (x) => x < allowedUpRightKicks[0],
+    );
+  }
+
+  return {
+    // All available moves
+    availableUpLeftMoves,
+    availableUpRightMoves,
+    availableDownRightMoves,
+    availableDownLeftMoves,
+    // All available kicks
+    allowedUpLeftKicks,
+    allowedUpRightKicks,
+    allowedDownRightKicks,
+    allowedDownLeftKicks,
+    // All must kicks
+    mustDownLeftKicks,
+    mustDownRightKicks,
+    mustUpLeftKicks,
+    mustUpRightKicks,
+  };
+}
+
+function queenMove(
+  activeChecker,
+  moveCoordinate,
+  checkersList,
+  checkerColor,
+  queenMaking,
+) {
+  const queenPosition = activeChecker.position;
+
+  const {
+    // All available moves
+    availableUpLeftMoves,
+    availableUpRightMoves,
+    availableDownRightMoves,
+    availableDownLeftMoves,
+    // All available kicks
+    allowedUpLeftKicks,
+    allowedUpRightKicks,
+    allowedDownRightKicks,
+    allowedDownLeftKicks,
+    // All must kicks
+    mustDownLeftKicks,
+    mustDownRightKicks,
+    mustUpLeftKicks,
+    mustUpRightKicks,
+  } = calculateQueenMoves(activeChecker, checkerColor);
+
   const removeQueenFromBoard = (availableMoves) => {
+    const currentChecker = { ...activeChecker };
+    function proceedRemoval() {
+      getBoard[availableMoves[0]].style.backgroundColor = 'rgb(166, 195, 111)';
+      getBoard[currentChecker.position].style.backgroundColor =
+        'rgb(166, 195, 111)';
+      getBoard[moveCoordinate].removeChild(getBoard[moveCoordinate].firstChild);
+    }
+
     if (!availableMoves.includes(moveCoordinate)) {
       getBoard[availableMoves[0]].style.backgroundColor = 'red';
-      getBoard[activeChecker.position].style.backgroundColor = 'red';
+      getBoard[currentChecker.position].style.backgroundColor = 'red';
+      const timer = setTimeout(proceedRemoval, 2000);
     }
   };
 
@@ -174,10 +249,8 @@ function queenMove(
       availableDownLeftMoves.includes(moveCoordinate) &&
       moveCoordinate < allowedDownLeftKicks[0])
   ) {
-    const availableMoves = availableDownLeftMoves.filter(
-      (x) => x > allowedDownLeftKicks[0],
-    );
-    removeQueenFromBoard(availableMoves);
+    // Must down left kicks
+    removeQueenFromBoard(mustDownLeftKicks);
   }
 
   if (
@@ -188,10 +261,8 @@ function queenMove(
       availableDownRightMoves.includes(moveCoordinate) &&
       moveCoordinate < allowedDownRightKicks[0])
   ) {
-    const availableMoves = availableDownRightMoves.filter(
-      (x) => x > allowedDownRightKicks[0],
-    );
-    removeQueenFromBoard(availableMoves);
+    // Must down right kicks
+    removeQueenFromBoard(mustDownRightKicks);
   }
 
   if (
@@ -202,10 +273,8 @@ function queenMove(
       availableUpLeftMoves.includes(moveCoordinate) &&
       moveCoordinate > allowedUpLeftKicks[0])
   ) {
-    const availableMoves = availableUpLeftMoves.filter(
-      (x) => x < allowedUpLeftKicks[0],
-    );
-    removeQueenFromBoard(availableMoves);
+    // Must up left kicks
+    removeQueenFromBoard(mustUpLeftKicks);
   }
 
   if (
@@ -216,10 +285,8 @@ function queenMove(
       availableUpRightMoves.includes(moveCoordinate) &&
       moveCoordinate > allowedUpRightKicks[0])
   ) {
-    const availableMoves = availableUpRightMoves.filter(
-      (x) => x < allowedUpRightKicks[0],
-    );
-    removeQueenFromBoard(availableMoves);
+    // Must up right kicks
+    removeQueenFromBoard(mustUpRightKicks);
   }
 
   // Make left up move with a queen
