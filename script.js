@@ -22,6 +22,7 @@ let whosMove = 'white';
 let whiteCheckersList = [];
 let blackCheckersList = [];
 let mustMoves = [];
+let queenMustMoves = [];
 
 const isLeftWallObstacle = (checker) => {
   let obstacle = false;
@@ -914,26 +915,145 @@ function isMoveMadeWithOrWitoutAMustMove(movingToPosition) {
   // }
 }
 
+function createEachQueenMustMoves() {
+  queenMustMoves = [];
+  const filterOutAllQueens =
+    whosMove === 'white'
+      ? whiteCheckersList.filter((x) => x.isQueen)
+      : blackCheckersList.filter((x) => x.isQueen);
+  if (filterOutAllQueens.length) {
+    for (let i = 0; i < filterOutAllQueens.length; i++) {
+      const {
+        mustDownLeftKicks,
+        mustDownRightKicks,
+        mustUpLeftKicks,
+        mustUpRightKicks,
+      } = calculateQueenMoves(filterOutAllQueens[i], whosMove);
+
+      const queen = filterOutAllQueens[i];
+
+      if (
+        !mustDownLeftKicks.length &&
+        !mustDownRightKicks.length &&
+        !mustUpLeftKicks.length &&
+        !mustUpRightKicks.length
+      ) {
+        continue;
+      }
+
+      if (mustDownLeftKicks.length) {
+        queen.mustDownLeftKicks = mustDownLeftKicks;
+      }
+
+      if (mustDownRightKicks.length) {
+        queen.mustDownRightKicks = mustDownRightKicks;
+      }
+
+      if (mustUpLeftKicks.length) {
+        queen.mustUpLeftKicks = mustUpLeftKicks;
+      }
+
+      if (mustUpRightKicks.length) {
+        queen.mustUpRightKicks = mustUpRightKicks;
+      }
+      queenMustMoves.push(queen);
+    }
+  }
+}
+
+function otherCheckerMoveValidity(moveIdx, activeChecker, moveColor) {
+  if (activeChecker.position !== moveIdx) {
+    if (!queenMustMoves.length) {
+      return;
+    }
+    const proceedDeletion = () => {};
+
+    const selectedCheckerExistsInMustMoves = queenMustMoves.find(
+      (x) => x.position === activeChecker.position,
+    );
+
+    if (!selectedCheckerExistsInMustMoves) {
+      getBoard[queenMustMoves[0].position].style.backgroundColor = 'red';
+      getBoard[queenMustMoves[0].mustUpRightKicks[0]].style.backgroundColor =
+        'red';
+      return;
+    }
+
+    
+
+    queenMustMoves = [];
+
+    // if (
+    //   otherQueenMustMoves.mustDownLeftKicks &&
+    //   otherQueenMustMoves.mustDownLeftKicks.length &&
+    //   selectedChecker.position !== moveIdx
+    // ) {
+    //   // ALSO NEED TO REMOVE QUEEN FROM CHECKERS ARRAY FROM HERE AS WELL AS FROM QUEEN MOVE FUNCTION
+    //   getBoard[otherQueenMustMoves.position].style.backgroundColor = 'red';
+    //   getBoard[otherQueenMustMoves.mustDownLeftKicks[0]].style.backgroundColor =
+    //     'red';
+    //   return;
+    // }
+    // if (
+    //   otherQueenMustMoves.mustDownRightKicks &&
+    //   otherQueenMustMoves.mustDownRightKicks.length &&
+    //   selectedChecker.position !== moveIdx
+    // ) {
+    //   removeQueenFromBoard(
+    //     otherQueenMustMoves.mustDownRightKicks,
+    //     otherQueenMustMoves.position,
+    //   );
+    //   return;
+    // }
+    // if (
+    //   otherQueenMustMoves.mustUpLeftKicks &&
+    //   otherQueenMustMoves.mustUpLeftKicks.length &&
+    //   selectedChecker.position !== moveIdx
+    // ) {
+    //   removeQueenFromBoard(
+    //     otherQueenMustMoves.mustUpLeftKicks,
+    //     otherQueenMustMoves.position,
+    //   );
+    //   return;
+    // }
+    // if (
+    //   otherQueenMustMoves.mustUpRightKicks &&
+    //   otherQueenMustMoves.mustUpRightKicks.length
+    //   // HERE IS A MARKING BUG
+    // ) {
+    //   getBoard[otherQueenMustMoves.position].style.backgroundColor = 'red';
+    //   getBoard[otherQueenMustMoves.mustUpRightKicks[0]].style.backgroundColor =
+    //     'red';
+    //   const timer = proceedDeletion();
+    //   return;
+    // }
+  }
+}
+
 const checkerMoveClickListener = () => {
   for (let i = 0; i < getBoard.length; i++) {
     getBoard[i].addEventListener('click', () => {
       if (selectedChecker.position) {
         // White checker move
         if (selectedChecker.color === 'white' && whosMove === 'white') {
+          // Create queen must moves
+          createEachQueenMustMoves();
+          //Check for any necessary moves
+          checkForNecessaryMovies();
           // White queen moves
           const isCheckerAvailable = whiteCheckersList.find(
             (item) => item.position === selectedChecker.position,
           );
-          if (isCheckerAvailable && isCheckerAvailable.isQueen)
-            return queenMove(
+          if (isCheckerAvailable && isCheckerAvailable.isQueen) {
+            queenMove(
               selectedChecker,
               i,
               whiteCheckersList,
               'white',
               createWhiteQueen,
             );
-          //Check for any necessary moves
-          checkForNecessaryMovies();
+            return;
+          }
           // White checker moving down left
           if (
             i === selectedChecker.position + 7 &&
@@ -1118,6 +1238,7 @@ const checkerMoveClickListener = () => {
 
         // Black checker move
         if (selectedChecker.color === 'black' && whosMove === 'black') {
+          createEachQueenMustMoves();
           // Black queen moves
           const isCheckerAvailable = blackCheckersList.find(
             (item) => item.position === selectedChecker.position,

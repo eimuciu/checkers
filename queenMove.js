@@ -1,4 +1,4 @@
-function calculateQueenMoves(activeChecker, checkerColor) {
+function calculateQueenMoves(presentChecker, checkerColor) {
   // All available moves
   const availableUpLeftMoves = [];
   const availableUpRightMoves = [];
@@ -17,8 +17,8 @@ function calculateQueenMoves(activeChecker, checkerColor) {
   const bottomWall = [56, 58, 60, 62];
 
   // Calculate available moves for up left coordinates
-  for (let i = activeChecker.position; i > 0; i -= 9) {
-    if (activeChecker.position === i) continue;
+  for (let i = presentChecker.position; i > 0; i -= 9) {
+    if (presentChecker.position === i) continue;
     if (leftWall.includes(i)) {
       if (!getBoard[i].hasChildNodes()) {
         availableUpLeftMoves.push(i);
@@ -48,8 +48,8 @@ function calculateQueenMoves(activeChecker, checkerColor) {
   }
 
   // Calculate available moves for down right coordinates
-  for (let i = activeChecker.position; i < 63; i += 9) {
-    if (activeChecker.position === i) continue;
+  for (let i = presentChecker.position; i < 63; i += 9) {
+    if (presentChecker.position === i) continue;
     if (rightWall.includes(i)) {
       if (!getBoard[i].hasChildNodes()) {
         availableDownRightMoves.push(i);
@@ -79,8 +79,8 @@ function calculateQueenMoves(activeChecker, checkerColor) {
   }
 
   // Calculate available moves for up right coordinates
-  for (let i = activeChecker.position; i > 0; i -= 7) {
-    if (activeChecker.position === i) continue;
+  for (let i = presentChecker.position; i > 0; i -= 7) {
+    if (presentChecker.position === i) continue;
     if (rightWall.includes(i)) {
       if (!getBoard[i].hasChildNodes()) {
         availableUpRightMoves.push(i);
@@ -116,8 +116,8 @@ function calculateQueenMoves(activeChecker, checkerColor) {
   }
 
   // Calculate available moves for down left coordinates
-  for (let i = activeChecker.position; i < 63; i += 7) {
-    if (activeChecker.position === i) continue;
+  for (let i = presentChecker.position; i < 63; i += 7) {
+    if (presentChecker.position === i) continue;
     if (leftWall.includes(i)) {
       if (!getBoard[i].hasChildNodes()) {
         availableDownLeftMoves.push(i);
@@ -199,13 +199,15 @@ function calculateQueenMoves(activeChecker, checkerColor) {
 }
 
 function queenMove(
-  activeChecker,
+  presentChecker,
   moveCoordinate,
   checkersList,
-  checkerColor,
+  presentCheckerColor,
   queenMaking,
 ) {
-  const queenPosition = activeChecker.position;
+  const queenPosition = presentChecker.position;
+  const activeChecker = { ...presentChecker };
+  const checkerColor = presentCheckerColor;
 
   const {
     // All available moves
@@ -225,7 +227,9 @@ function queenMove(
     mustUpRightKicks,
   } = calculateQueenMoves(activeChecker, checkerColor);
 
-  const removeQueenFromBoard = (availableMoves) => {
+  const removeQueenFromBoard = (availableMoves, moveCoordinate) => {
+    // ALSO NEED TO REMOVE QUEEN FROM CHECKERS ARRAY
+
     const currentChecker = { ...activeChecker };
     function proceedRemoval() {
       getBoard[availableMoves[0]].style.backgroundColor = 'rgb(166, 195, 111)';
@@ -241,171 +245,184 @@ function queenMove(
     }
   };
 
-  if (
-    (allowedDownLeftKicks.length &&
-      !availableDownLeftMoves.includes(moveCoordinate) &&
-      moveCoordinate !== activeChecker.position) ||
-    (allowedDownLeftKicks.length &&
-      availableDownLeftMoves.includes(moveCoordinate) &&
-      moveCoordinate < allowedDownLeftKicks[0])
-  ) {
-    // Must down left kicks
-    removeQueenFromBoard(mustDownLeftKicks);
-  }
-
-  if (
-    (allowedDownRightKicks.length &&
-      !availableDownRightMoves.includes(moveCoordinate) &&
-      moveCoordinate !== activeChecker.position) ||
-    (allowedDownRightKicks.length &&
-      availableDownRightMoves.includes(moveCoordinate) &&
-      moveCoordinate < allowedDownRightKicks[0])
-  ) {
-    // Must down right kicks
-    removeQueenFromBoard(mustDownRightKicks);
-  }
-
-  if (
-    (allowedUpLeftKicks.length &&
-      !availableUpLeftMoves.includes(moveCoordinate) &&
-      moveCoordinate !== activeChecker.position) ||
-    (allowedUpLeftKicks.length &&
-      availableUpLeftMoves.includes(moveCoordinate) &&
-      moveCoordinate > allowedUpLeftKicks[0])
-  ) {
-    // Must up left kicks
-    removeQueenFromBoard(mustUpLeftKicks);
-  }
-
-  if (
-    (allowedUpRightKicks.length &&
-      !allowedUpRightKicks.includes(moveCoordinate) &&
-      moveCoordinate !== activeChecker.position) ||
-    (allowedUpRightKicks.length &&
-      availableUpRightMoves.includes(moveCoordinate) &&
-      moveCoordinate > allowedUpRightKicks[0])
-  ) {
-    // Must up right kicks
-    removeQueenFromBoard(mustUpRightKicks);
-  }
-
-  // Make left up move with a queen
-  if (availableUpLeftMoves.includes(moveCoordinate)) {
-    getBoard[moveCoordinate].appendChild(queenMaking());
-    getBoard[queenPosition].removeChild(getBoard[queenPosition].firstChild);
-    allowedUpLeftKicks.forEach((kickPosition) => {
-      if (kickPosition > moveCoordinate) {
-        getBoard[kickPosition].removeChild(getBoard[kickPosition].firstChild);
+  if (moveCoordinate !== presentChecker.position) {
+    // Make left up move with a queen
+    if (availableUpLeftMoves.includes(moveCoordinate)) {
+      getBoard[moveCoordinate].appendChild(queenMaking());
+      getBoard[queenPosition].removeChild(getBoard[queenPosition].firstChild);
+      allowedUpLeftKicks.forEach((kickPosition) => {
+        if (kickPosition > moveCoordinate) {
+          getBoard[kickPosition].removeChild(getBoard[kickPosition].firstChild);
+        }
+      });
+      // Update checkers array with coordinates
+      if (checkerColor === 'white') {
+        whiteCheckersList = whiteCheckersList.map((item) => {
+          if (queenPosition === item.position)
+            return { ...item, position: moveCoordinate };
+          return item;
+        });
       }
-    });
-    // Update checkers array with coordinates
-    if (checkerColor === 'white') {
-      whiteCheckersList = whiteCheckersList.map((item) => {
-        if (queenPosition === item.position)
-          return { ...item, position: moveCoordinate };
-        return item;
-      });
-    }
-    if (checkerColor === 'black') {
-      blackCheckersList = blackCheckersList.map((item) => {
-        if (queenPosition === item.position)
-          return { ...item, position: moveCoordinate };
-        return item;
-      });
-    }
-    // Reset moves
-    activeChecker.color = '';
-    activeChecker.position = null;
-    whosMove = checkerColor === 'white' ? 'black' : 'white';
-  }
-
-  // Make right down move with a queen
-  if (availableDownRightMoves.includes(moveCoordinate)) {
-    getBoard[moveCoordinate].appendChild(queenMaking());
-    getBoard[queenPosition].removeChild(getBoard[queenPosition].firstChild);
-    allowedDownRightKicks.forEach((kickPosition) => {
-      if (kickPosition < moveCoordinate) {
-        getBoard[kickPosition].removeChild(getBoard[kickPosition].firstChild);
+      if (checkerColor === 'black') {
+        blackCheckersList = blackCheckersList.map((item) => {
+          if (queenPosition === item.position)
+            return { ...item, position: moveCoordinate };
+          return item;
+        });
       }
-    });
-    // Update checkers array with coordinates
-    if (checkerColor === 'white') {
-      whiteCheckersList = whiteCheckersList.map((item) => {
-        if (queenPosition === item.position)
-          return { ...item, position: moveCoordinate };
-        return item;
-      });
+      // Reset moves
+      presentChecker.color = '';
+      presentChecker.position = null;
+      whosMove = checkerColor === 'white' ? 'black' : 'white';
     }
-    if (checkerColor === 'black') {
-      blackCheckersList = blackCheckersList.map((item) => {
-        if (queenPosition === item.position)
-          return { ...item, position: moveCoordinate };
-        return item;
-      });
-    }
-    // Reset moves
-    activeChecker.color = '';
-    activeChecker.position = null;
-    whosMove = checkerColor === 'white' ? 'black' : 'white';
-  }
 
-  // Make right up move with a queen
-  if (availableUpRightMoves.includes(moveCoordinate)) {
-    getBoard[moveCoordinate].appendChild(queenMaking());
-    getBoard[queenPosition].removeChild(getBoard[queenPosition].firstChild);
-    allowedUpRightKicks.forEach((kickPosition) => {
-      if (kickPosition > moveCoordinate) {
-        getBoard[kickPosition].removeChild(getBoard[kickPosition].firstChild);
+    // Make right down move with a queen
+    if (availableDownRightMoves.includes(moveCoordinate)) {
+      getBoard[moveCoordinate].appendChild(queenMaking());
+      getBoard[queenPosition].removeChild(getBoard[queenPosition].firstChild);
+      allowedDownRightKicks.forEach((kickPosition) => {
+        if (kickPosition < moveCoordinate) {
+          getBoard[kickPosition].removeChild(getBoard[kickPosition].firstChild);
+        }
+      });
+      // Update checkers array with coordinates
+      if (checkerColor === 'white') {
+        whiteCheckersList = whiteCheckersList.map((item) => {
+          if (queenPosition === item.position)
+            return { ...item, position: moveCoordinate };
+          return item;
+        });
       }
-    });
-    // Update checkers array with coordinates
-    if (checkerColor === 'white') {
-      whiteCheckersList = whiteCheckersList.map((item) => {
-        if (queenPosition === item.position)
-          return { ...item, position: moveCoordinate };
-        return item;
-      });
+      if (checkerColor === 'black') {
+        blackCheckersList = blackCheckersList.map((item) => {
+          if (queenPosition === item.position)
+            return { ...item, position: moveCoordinate };
+          return item;
+        });
+      }
+      // Reset moves
+      presentChecker.color = '';
+      presentChecker.position = null;
+      whosMove = checkerColor === 'white' ? 'black' : 'white';
     }
-    if (checkerColor === 'black') {
-      blackCheckersList = blackCheckersList.map((item) => {
-        if (queenPosition === item.position)
-          return { ...item, position: moveCoordinate };
-        return item;
-      });
-    }
-    // Reset moves
-    activeChecker.color = '';
-    activeChecker.position = null;
-    whosMove = checkerColor === 'white' ? 'black' : 'white';
-  }
 
-  // Make left down move with a queen
-  if (availableDownLeftMoves.includes(moveCoordinate)) {
-    getBoard[moveCoordinate].appendChild(queenMaking());
-    getBoard[queenPosition].removeChild(getBoard[queenPosition].firstChild);
-    allowedDownLeftKicks.forEach((kickPosition) => {
-      if (kickPosition < moveCoordinate) {
-        getBoard[kickPosition].removeChild(getBoard[kickPosition].firstChild);
+    // Make right up move with a queen
+    if (availableUpRightMoves.includes(moveCoordinate)) {
+      getBoard[moveCoordinate].appendChild(queenMaking());
+      getBoard[queenPosition].removeChild(getBoard[queenPosition].firstChild);
+      allowedUpRightKicks.forEach((kickPosition) => {
+        if (kickPosition > moveCoordinate) {
+          getBoard[kickPosition].removeChild(getBoard[kickPosition].firstChild);
+        }
+      });
+      // Update checkers array with coordinates
+      if (checkerColor === 'white') {
+        whiteCheckersList = whiteCheckersList.map((item) => {
+          if (queenPosition === item.position)
+            return { ...item, position: moveCoordinate };
+          return item;
+        });
       }
-    });
-    // Update checkers array with coordinates
-    if (checkerColor === 'white') {
-      whiteCheckersList = whiteCheckersList.map((item) => {
-        if (queenPosition === item.position)
-          return { ...item, position: moveCoordinate };
-        return item;
-      });
+      if (checkerColor === 'black') {
+        blackCheckersList = blackCheckersList.map((item) => {
+          if (queenPosition === item.position)
+            return { ...item, position: moveCoordinate };
+          return item;
+        });
+      }
+      // Reset moves
+      presentChecker.color = '';
+      presentChecker.position = null;
+      whosMove = checkerColor === 'white' ? 'black' : 'white';
     }
-    if (checkerColor === 'black') {
-      blackCheckersList = blackCheckersList.map((item) => {
-        if (queenPosition === item.position)
-          return { ...item, position: moveCoordinate };
-        return item;
+
+    // Make left down move with a queen
+    if (availableDownLeftMoves.includes(moveCoordinate)) {
+      getBoard[moveCoordinate].appendChild(queenMaking());
+      getBoard[queenPosition].removeChild(getBoard[queenPosition].firstChild);
+      allowedDownLeftKicks.forEach((kickPosition) => {
+        if (kickPosition < moveCoordinate) {
+          getBoard[kickPosition].removeChild(getBoard[kickPosition].firstChild);
+        }
       });
+      // Update checkers array with coordinates
+      if (checkerColor === 'white') {
+        whiteCheckersList = whiteCheckersList.map((item) => {
+          if (queenPosition === item.position)
+            return { ...item, position: moveCoordinate };
+          return item;
+        });
+      }
+      if (checkerColor === 'black') {
+        blackCheckersList = blackCheckersList.map((item) => {
+          if (queenPosition === item.position)
+            return { ...item, position: moveCoordinate };
+          return item;
+        });
+      }
+      // Reset moves
+      presentChecker.color = '';
+      presentChecker.position = null;
+      whosMove = checkerColor === 'white' ? 'black' : 'white';
     }
-    // Reset moves
-    activeChecker.color = '';
-    activeChecker.position = null;
-    whosMove = checkerColor === 'white' ? 'black' : 'white';
+
+    // // Everything below is checking if the move was valid
+    // if (
+    //   (allowedDownLeftKicks.length &&
+    //     !availableDownLeftMoves.includes(moveCoordinate) &&
+    //     moveCoordinate !== presentChecker.position) ||
+    //   (allowedDownLeftKicks.length &&
+    //     availableDownLeftMoves.includes(moveCoordinate) &&
+    //     moveCoordinate < allowedDownLeftKicks[0])
+    // ) {
+    //   // Must down left kicks
+    //   removeQueenFromBoard(mustDownLeftKicks, moveCoordinate);
+    //   return;
+    // }
+
+    // if (
+    //   (allowedDownRightKicks.length &&
+    //     !availableDownRightMoves.includes(moveCoordinate) &&
+    //     moveCoordinate !== presentChecker.position) ||
+    //   (allowedDownRightKicks.length &&
+    //     availableDownRightMoves.includes(moveCoordinate) &&
+    //     moveCoordinate < allowedDownRightKicks[0])
+    // ) {
+    //   // Must down right kicks
+    //   removeQueenFromBoard(mustDownRightKicks, moveCoordinate);
+    //   return;
+    // }
+
+    // if (
+    //   (allowedUpLeftKicks.length &&
+    //     !availableUpLeftMoves.includes(moveCoordinate) &&
+    //     moveCoordinate !== presentChecker.position) ||
+    //   (allowedUpLeftKicks.length &&
+    //     availableUpLeftMoves.includes(moveCoordinate) &&
+    //     moveCoordinate > allowedUpLeftKicks[0])
+    // ) {
+    //   // Must up left kicks
+    //   removeQueenFromBoard(mustUpLeftKicks, moveCoordinate);
+    //   return;
+    // }
+
+    // if (
+    //   (allowedUpRightKicks.length &&
+    //     !allowedUpRightKicks.includes(moveCoordinate) &&
+    //     moveCoordinate !== presentChecker.position) ||
+    //   (allowedUpRightKicks.length &&
+    //     availableUpRightMoves.includes(moveCoordinate) &&
+    //     moveCoordinate > allowedUpRightKicks[0])
+    // ) {
+    //   // Must up right kicks
+    //   removeQueenFromBoard(mustUpRightKicks, moveCoordinate);
+    //   return;
+    // }
+
+    otherCheckerMoveValidity(
+      moveCoordinate,
+      activeChecker,
+      presentCheckerColor,
+    );
   }
 }
