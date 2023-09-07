@@ -107,7 +107,7 @@ const isLeftDownKickValid = (checker, kickColor) => {
     getBoard[checker.position + 14] &&
     getBoard[checker.position + 7].childNodes.length > 0 &&
     getBoard[checker.position + 7].firstChild.getAttribute('name') ===
-      kickColor &&
+    kickColor &&
     getBoard[checker.position + 14].childNodes.length <= 0
   ) {
     if (!isLeftWallObstacle(checker) && !isBottomWallObstacle(checker)) {
@@ -124,7 +124,7 @@ const isRightDownKickValid = (checker, kickColor) => {
     getBoard[checker.position + 18] &&
     getBoard[checker.position + 9].childNodes.length > 0 &&
     getBoard[checker.position + 9].firstChild.getAttribute('name') ===
-      kickColor &&
+    kickColor &&
     getBoard[checker.position + 18].childNodes.length <= 0
   ) {
     if (!isRightWallObstacle(checker) && !isBottomWallObstacle(checker)) {
@@ -141,7 +141,7 @@ const isRightUpKickValid = (checker, kickColor) => {
     getBoard[checker.position - 14] &&
     getBoard[checker.position - 7].childNodes.length > 0 &&
     getBoard[checker.position - 7].firstChild.getAttribute('name') ===
-      kickColor &&
+    kickColor &&
     getBoard[checker.position - 14].childNodes.length <= 0
   ) {
     if (!isRightWallObstacle(checker) && !isTopWallObstacle(checker)) {
@@ -158,7 +158,7 @@ const isLeftUpKickValid = (checker, kickColor) => {
     getBoard[checker.position - 18] &&
     getBoard[checker.position - 9].childNodes.length > 0 &&
     getBoard[checker.position - 9].firstChild.getAttribute('name') ===
-      kickColor &&
+    kickColor &&
     getBoard[checker.position - 18].childNodes.length <= 0
   ) {
     if (!isLeftWallObstacle(checker) && !isTopWallObstacle(checker)) {
@@ -533,67 +533,19 @@ const createCell = (checker, color) => {
   return cell;
 };
 
-// const createBoard = () => {
-//   for (let i = 0; i < rows; i++) {
-//     for (let y = 0; y < columns; y++) {
-//       if (i === 0 || i === 1 || i === 2) {
-//         if ((i % 2 === 0) & (y % 2 === 1)) {
-//           board.appendChild(createCell(createWhiteChecker(), '#A6C36F'));
-//           whiteCheckersList.push({
-//             isQueen: false,
-//             position: i === 0 ? i * 8 + y : i === 2 ? i * 8 + y : null,
-//           });
-//         } else if ((i % 2 === 1) & (y % 2 === 0)) {
-//           board.appendChild(createCell(createWhiteChecker(), '#A6C36F'));
-//           whiteCheckersList.push({
-//             isQueen: false,
-//             position: i === 1 ? i * 8 + y : null,
-//           });
-//         } else {
-//           board.appendChild(createCell());
-//         }
-//       } else if (i === rows - 1 || i === rows - 2 || i === rows - 3) {
-//         if ((i % 2 === 0) & (y % 2 === 1)) {
-//           board.appendChild(createCell(createBlackChecker(), '#A6C36F'));
-//           blackCheckersList.push({
-//             isQueen: false,
-//             position: i === rows - 2 ? i * 8 + y : null,
-//           });
-//         } else if ((i % 2 === 1) & (y % 2 === 0)) {
-//           board.appendChild(createCell(createBlackChecker(), '#A6C36F'));
-//           blackCheckersList.push({
-//             isQueen: false,
-//             position: i === rows - 1 ? i * 8 + y : rows - 3 ? i * 8 + y : null,
-//           });
-//         } else {
-//           board.appendChild(createCell());
-//         }
-//       } else {
-//         if ((i % 2 === 0) & (y % 2 === 1)) {
-//           board.appendChild(createCell(null, '#A6C36F'));
-//         } else if ((i % 2 === 1) & (y % 2 === 0)) {
-//           board.appendChild(createCell(null, '#A6C36F'));
-//         } else {
-//           board.appendChild(createCell());
-//         }
-//       }
-//     }
-//   }
-// };
-
 const createBoard = () => {
   for (let i = 0; i < rows; i++) {
     for (let y = 0; y < columns; y++) {
       if (i === 0 || i === 1 || i === 2) {
         if ((i % 2 === 0) & (y % 2 === 1)) {
-          board.appendChild(createCell(null, '#A6C36F'));
-          // whiteCheckersList.push({
-          //   isQueen: false,
-          //   position: i === 0 ? i * 8 + y : i === 2 ? i * 8 + y : null,
-          // });
+          board.appendChild(createCell(createWhiteChecker(), '#A6C36F'));
+          whiteCheckersList.push({
+            isQueen: false,
+            position: i === 0 ? i * 8 + y : i === 2 ? i * 8 + y : null,
+          });
         } else if ((i % 2 === 1) & (y % 2 === 0)) {
-          board.appendChild(createCell(createBlackChecker(), '#A6C36F'));
-          blackCheckersList.push({
+          board.appendChild(createCell(createWhiteChecker(), '#A6C36F'));
+          whiteCheckersList.push({
             isQueen: false,
             position: i === 1 ? i * 8 + y : null,
           });
@@ -602,27 +554,17 @@ const createBoard = () => {
         }
       } else if (i === rows - 1 || i === rows - 2 || i === rows - 3) {
         if ((i % 2 === 0) & (y % 2 === 1)) {
-          board.appendChild(createCell(null, '#A6C36F'));
-          // blackCheckersList.push({
-          //   isQueen: false,
-          //   position: i === rows - 2 ? i * 8 + y : null,
-          // });
+          board.appendChild(createCell(createBlackChecker(), '#A6C36F'));
+          blackCheckersList.push({
+            isQueen: false,
+            position: i === rows - 2 ? i * 8 + y : null,
+          });
         } else if ((i % 2 === 1) & (y % 2 === 0)) {
-          if (y === 2) {
-            board.appendChild(createCell(createWhiteQueen(), '#A6C36F'));
-            whiteCheckersList.push({
-              isQueen: true,
-              position:
-                i === rows - 1 ? i * 8 + y : rows - 3 ? i * 8 + y : null,
-            });
-          } else {
-            board.appendChild(createCell(null, '#A6C36F'));
-          }
-
-          // blackCheckersList.push({
-          //   isQueen: false,
-          //   position: i === rows - 1 ? i * 8 + y : rows - 3 ? i * 8 + y : null,
-          // });
+          board.appendChild(createCell(createBlackChecker(), '#A6C36F'));
+          blackCheckersList.push({
+            isQueen: false,
+            position: i === rows - 1 ? i * 8 + y : rows - 3 ? i * 8 + y : null,
+          });
         } else {
           board.appendChild(createCell());
         }
@@ -638,6 +580,64 @@ const createBoard = () => {
     }
   }
 };
+
+// const createBoard = () => {
+//   for (let i = 0; i < rows; i++) {
+//     for (let y = 0; y < columns; y++) {
+//       if (i === 0 || i === 1 || i === 2) {
+//         if ((i % 2 === 0) & (y % 2 === 1)) {
+//           board.appendChild(createCell(null, '#A6C36F'));
+//           // whiteCheckersList.push({
+//           //   isQueen: false,
+//           //   position: i === 0 ? i * 8 + y : i === 2 ? i * 8 + y : null,
+//           // });
+//         } else if ((i % 2 === 1) & (y % 2 === 0)) {
+//           board.appendChild(createCell(createBlackChecker(), '#A6C36F'));
+//           blackCheckersList.push({
+//             isQueen: false,
+//             position: i === 1 ? i * 8 + y : null,
+//           });
+//         } else {
+//           board.appendChild(createCell());
+//         }
+//       } else if (i === rows - 1 || i === rows - 2 || i === rows - 3) {
+//         if ((i % 2 === 0) & (y % 2 === 1)) {
+//           board.appendChild(createCell(null, '#A6C36F'));
+//           // blackCheckersList.push({
+//           //   isQueen: false,
+//           //   position: i === rows - 2 ? i * 8 + y : null,
+//           // });
+//         } else if ((i % 2 === 1) & (y % 2 === 0)) {
+//           if (y === 2) {
+//             board.appendChild(createCell(createWhiteQueen(), '#A6C36F'));
+//             whiteCheckersList.push({
+//               isQueen: true,
+//               position:
+//                 i === rows - 1 ? i * 8 + y : rows - 3 ? i * 8 + y : null,
+//             });
+//           } else {
+//             board.appendChild(createCell(null, '#A6C36F'));
+//           }
+
+//           // blackCheckersList.push({
+//           //   isQueen: false,
+//           //   position: i === rows - 1 ? i * 8 + y : rows - 3 ? i * 8 + y : null,
+//           // });
+//         } else {
+//           board.appendChild(createCell());
+//         }
+//       } else {
+//         if ((i % 2 === 0) & (y % 2 === 1)) {
+//           board.appendChild(createCell(null, '#A6C36F'));
+//         } else if ((i % 2 === 1) & (y % 2 === 0)) {
+//           board.appendChild(createCell(null, '#A6C36F'));
+//         } else {
+//           board.appendChild(createCell());
+//         }
+//       }
+//     }
+//   }
+// };
 
 const removeColor = (index) => {
   for (let i = 0; i < getBoard.length; i++) {
@@ -739,9 +739,14 @@ function removeCheckerFromArray(arr, pos) {
   return arr.filter((x) => x.position !== pos);
 }
 
-function isMoveMadeWithOrWitoutAMustMove(movingToPosition) {
+function isMoveMadeWithOrWitoutAMustMove(movingToPosition, selectedChecker) {
+  console.log("Simple checker kick function")
   if (selectedChecker.position) {
+    if (!mustMoves.length && !queenMustMoves.length) {
+      return
+    }
     if (!mustMoves.length) {
+      otherQueenCheckersMoveValidity(movingToPosition, selectedChecker, whosMove)
       return;
     }
     const findSelectedChecker = mustMoves.find(
@@ -751,7 +756,7 @@ function isMoveMadeWithOrWitoutAMustMove(movingToPosition) {
       findSelectedChecker &&
       findSelectedChecker.hasOwnProperty('moves') &&
       movingToPosition ===
-        eval(selectedChecker.position + findSelectedChecker.moves[0])
+      eval(selectedChecker.position + findSelectedChecker.moves[0])
     ) {
       const removePositionNumber = findSelectedChecker.moves[0].slice(1) / 2;
       const formatedRemovePosition =
@@ -790,7 +795,7 @@ function isMoveMadeWithOrWitoutAMustMove(movingToPosition) {
       findSelectedChecker &&
       findSelectedChecker.hasOwnProperty('moves') &&
       movingToPosition !==
-        eval(selectedChecker.position + findSelectedChecker.moves[0])
+      eval(selectedChecker.position + findSelectedChecker.moves[0])
     ) {
       getBoard[mustMoves[0].checker.position].style.backgroundColor = 'red';
       getBoard[
@@ -904,23 +909,18 @@ function isMoveMadeWithOrWitoutAMustMove(movingToPosition) {
     const timer = setTimeout(proceedRemoval, 2000);
   }
 
-  // {
-  //   "checker": {
-  //       "isQueen": false,
-  //       "position": 26
-  //   },
-  //   "moves": [
-  //       "+18"
-  //   ]
-  // }
+  console.log(whiteCheckersList)
+  console.log(blackCheckersList)
 }
 
 function createEachQueenMustMoves() {
+  const whiteQueens = whiteCheckersList.filter((x) => x.isQueen).map(x => ({ ...x }))
+  const blackQueens = blackCheckersList.filter((x) => x.isQueen).map(x => ({ ...x }))
   queenMustMoves = [];
   const filterOutAllQueens =
     whosMove === 'white'
-      ? whiteCheckersList.filter((x) => x.isQueen)
-      : blackCheckersList.filter((x) => x.isQueen);
+      ? whiteQueens
+      : blackQueens;
   if (filterOutAllQueens.length) {
     for (let i = 0; i < filterOutAllQueens.length; i++) {
       const {
@@ -961,74 +961,7 @@ function createEachQueenMustMoves() {
   }
 }
 
-function otherCheckerMoveValidity(moveIdx, activeChecker, moveColor) {
-  if (activeChecker.position !== moveIdx) {
-    if (!queenMustMoves.length) {
-      return;
-    }
-    const proceedDeletion = () => {};
 
-    const selectedCheckerExistsInMustMoves = queenMustMoves.find(
-      (x) => x.position === activeChecker.position,
-    );
-
-    if (!selectedCheckerExistsInMustMoves) {
-      getBoard[queenMustMoves[0].position].style.backgroundColor = 'red';
-      getBoard[queenMustMoves[0].mustUpRightKicks[0]].style.backgroundColor =
-        'red';
-      return;
-    }
-
-    
-
-    queenMustMoves = [];
-
-    // if (
-    //   otherQueenMustMoves.mustDownLeftKicks &&
-    //   otherQueenMustMoves.mustDownLeftKicks.length &&
-    //   selectedChecker.position !== moveIdx
-    // ) {
-    //   // ALSO NEED TO REMOVE QUEEN FROM CHECKERS ARRAY FROM HERE AS WELL AS FROM QUEEN MOVE FUNCTION
-    //   getBoard[otherQueenMustMoves.position].style.backgroundColor = 'red';
-    //   getBoard[otherQueenMustMoves.mustDownLeftKicks[0]].style.backgroundColor =
-    //     'red';
-    //   return;
-    // }
-    // if (
-    //   otherQueenMustMoves.mustDownRightKicks &&
-    //   otherQueenMustMoves.mustDownRightKicks.length &&
-    //   selectedChecker.position !== moveIdx
-    // ) {
-    //   removeQueenFromBoard(
-    //     otherQueenMustMoves.mustDownRightKicks,
-    //     otherQueenMustMoves.position,
-    //   );
-    //   return;
-    // }
-    // if (
-    //   otherQueenMustMoves.mustUpLeftKicks &&
-    //   otherQueenMustMoves.mustUpLeftKicks.length &&
-    //   selectedChecker.position !== moveIdx
-    // ) {
-    //   removeQueenFromBoard(
-    //     otherQueenMustMoves.mustUpLeftKicks,
-    //     otherQueenMustMoves.position,
-    //   );
-    //   return;
-    // }
-    // if (
-    //   otherQueenMustMoves.mustUpRightKicks &&
-    //   otherQueenMustMoves.mustUpRightKicks.length
-    //   // HERE IS A MARKING BUG
-    // ) {
-    //   getBoard[otherQueenMustMoves.position].style.backgroundColor = 'red';
-    //   getBoard[otherQueenMustMoves.mustUpRightKicks[0]].style.backgroundColor =
-    //     'red';
-    //   const timer = proceedDeletion();
-    //   return;
-    // }
-  }
-}
 
 const checkerMoveClickListener = () => {
   for (let i = 0; i < getBoard.length; i++) {
@@ -1077,7 +1010,7 @@ const checkerMoveClickListener = () => {
             whiteQueenMaking(7, i);
 
             // Move validity
-            isMoveMadeWithOrWitoutAMustMove(i);
+            isMoveMadeWithOrWitoutAMustMove(i, selectedChecker);
 
             // Resetting moves
             selectedChecker.color = '';
@@ -1108,7 +1041,7 @@ const checkerMoveClickListener = () => {
             whiteQueenMaking(9, i);
 
             // Move validity
-            isMoveMadeWithOrWitoutAMustMove(i);
+            isMoveMadeWithOrWitoutAMustMove(i, selectedChecker);
 
             //Resetting moves
             selectedChecker.color = '';
@@ -1138,7 +1071,7 @@ const checkerMoveClickListener = () => {
             whiteQueenMaking(14, i);
 
             // Move validity
-            isMoveMadeWithOrWitoutAMustMove(i);
+            isMoveMadeWithOrWitoutAMustMove(i, selectedChecker);
 
             //Resetting moves
             selectedChecker.color = '';
@@ -1169,7 +1102,7 @@ const checkerMoveClickListener = () => {
             whiteQueenMaking(18, i);
 
             // Move validity
-            isMoveMadeWithOrWitoutAMustMove(i);
+            isMoveMadeWithOrWitoutAMustMove(i, selectedChecker);
 
             //Resetting moves
             selectedChecker.color = '';
@@ -1198,7 +1131,7 @@ const checkerMoveClickListener = () => {
             );
 
             // Move validity
-            isMoveMadeWithOrWitoutAMustMove(i);
+            isMoveMadeWithOrWitoutAMustMove(i, selectedChecker);
 
             // Resetting moves
             selectedChecker.color = '';
@@ -1227,7 +1160,7 @@ const checkerMoveClickListener = () => {
             );
 
             // Move validity
-            isMoveMadeWithOrWitoutAMustMove(i);
+            isMoveMadeWithOrWitoutAMustMove(i, selectedChecker);
 
             // Resetting moves
             selectedChecker.color = '';
@@ -1277,7 +1210,7 @@ const checkerMoveClickListener = () => {
             blackQueenMaking(-7, i);
 
             // Move validity
-            isMoveMadeWithOrWitoutAMustMove(i);
+            isMoveMadeWithOrWitoutAMustMove(i, selectedChecker);
 
             //Resetting moves
             selectedChecker.color = '';
@@ -1309,7 +1242,7 @@ const checkerMoveClickListener = () => {
             blackQueenMaking(-9, i);
 
             // Move validity
-            isMoveMadeWithOrWitoutAMustMove(i);
+            isMoveMadeWithOrWitoutAMustMove(i, selectedChecker);
 
             // Resetting moves
             selectedChecker.color = '';
@@ -1340,7 +1273,7 @@ const checkerMoveClickListener = () => {
             blackQueenMaking(-14, i);
 
             // Move validity
-            isMoveMadeWithOrWitoutAMustMove(i);
+            isMoveMadeWithOrWitoutAMustMove(i, selectedChecker);
 
             // Resetting moves
             selectedChecker.color = '';
@@ -1371,7 +1304,7 @@ const checkerMoveClickListener = () => {
             blackQueenMaking(-18, i);
 
             // Move validity
-            isMoveMadeWithOrWitoutAMustMove(i);
+            isMoveMadeWithOrWitoutAMustMove(i, selectedChecker);
 
             // Resetting moves
             selectedChecker.color = '';
@@ -1400,7 +1333,7 @@ const checkerMoveClickListener = () => {
             );
 
             // Move validity
-            isMoveMadeWithOrWitoutAMustMove(i);
+            isMoveMadeWithOrWitoutAMustMove(i, selectedChecker);
 
             // Resetting moves
             selectedChecker.color = '';
@@ -1429,7 +1362,7 @@ const checkerMoveClickListener = () => {
             );
 
             // Move validity
-            isMoveMadeWithOrWitoutAMustMove(i);
+            isMoveMadeWithOrWitoutAMustMove(i, selectedChecker);
 
             // Resetting moves
             selectedChecker.color = '';
@@ -1444,5 +1377,13 @@ const checkerMoveClickListener = () => {
 
 body.appendChild(createMainContainer(board));
 createBoard();
+
+// getBoard[53].appendChild(createWhiteChecker())
+// getBoard[46].appendChild(createBlackChecker())
+// getBoard[7].appendChild(createBlackQueen())
+// whiteCheckersList.push({ isQueen: false, position: 53 })
+// blackCheckersList.push({ isQueen: false, position: 46 })
+// blackCheckersList.push({ isQueen: true, position: 7 })
+
 checkerClickListener();
 checkerMoveClickListener();

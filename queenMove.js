@@ -198,6 +198,105 @@ function calculateQueenMoves(presentChecker, checkerColor) {
   };
 }
 
+function otherQueenCheckersMoveValidity(moveIdx, activeChecker, moveColor) {
+  console.log("Queen checker kick function")
+  if (activeChecker.position !== moveIdx) {
+    if (!mustMoves.length && !queenMustMoves.length) {
+      return
+    }
+    if (!queenMustMoves.length) {
+      isMoveMadeWithOrWitoutAMustMove(moveIdx, activeChecker)
+      return;
+    }
+    const selectedCheckerExistsInMustMoves = queenMustMoves.find(
+      (x) => x.position === activeChecker.position,
+    );
+    if (!selectedCheckerExistsInMustMoves) {
+      const proceedDeletion = (pos) => {
+        getBoard[queenMustMoves[0].position].style.backgroundColor = 'rgb(166, 195, 111)';
+        getBoard[pos].style.backgroundColor =
+          'rgb(166, 195, 111)';
+        getBoard[queenMustMoves[0].position].removeChild(getBoard[queenMustMoves[0].position].firstChild)
+        if (moveColor === "white") {
+          whiteCheckersList = whiteCheckersList.filter(x => x.position !== queenMustMoves[0].position)
+        }
+        if (moveColor === "black") {
+          blackCheckersList = blackCheckersList.filter(x => x.position !== queenMustMoves[0].position)
+        }
+      };
+      if (queenMustMoves[0].mustUpRightKicks && queenMustMoves[0].mustUpRightKicks.length) {
+        getBoard[queenMustMoves[0].position].style.backgroundColor = 'red';
+        getBoard[queenMustMoves[0].mustUpRightKicks[0]].style.backgroundColor =
+          'red';
+        const timer = setTimeout(() => { proceedDeletion(queenMustMoves[0].mustUpRightKicks[0]) }, 2000)
+        return;
+      }
+      if (queenMustMoves[0].mustUpLeftKicks && queenMustMoves[0].mustUpLeftKicks.length) {
+        getBoard[queenMustMoves[0].position].style.backgroundColor = 'red';
+        getBoard[queenMustMoves[0].mustUpLeftKicks[0]].style.backgroundColor =
+          'red';
+        const timer = setTimeout(() => { proceedDeletion(queenMustMoves[0].mustUpLeftKicks[0]) }, 2000)
+        return;
+      }
+      if (queenMustMoves[0].mustDownRightKicks && queenMustMoves[0].mustDownRightKicks.length) {
+        getBoard[queenMustMoves[0].position].style.backgroundColor = 'red';
+        getBoard[queenMustMoves[0].mustDownRightKicks[0]].style.backgroundColor =
+          'red';
+        const timer = setTimeout(() => { proceedDeletion(queenMustMoves[0].mustDownRightKicks[0]) }, 2000)
+        return;
+      }
+      if (queenMustMoves[0].mustDownLeftKicks && queenMustMoves[0].mustDownLeftKicks.length) {
+        console.log(queenMustMoves[0])
+        getBoard[queenMustMoves[0].position].style.backgroundColor = 'red';
+        getBoard[queenMustMoves[0].mustDownLeftKicks[0]].style.backgroundColor =
+          'red';
+        const timer = setTimeout(() => { proceedDeletion(queenMustMoves[0].mustDownLeftKicks[0]) }, 2000)
+        return;
+      }
+    }
+    if (selectedCheckerExistsInMustMoves) {
+      const proceedDeletion = (pos, movePos) => {
+        getBoard[selectedCheckerExistsInMustMoves.position].style.backgroundColor = 'rgb(166, 195, 111)';
+        getBoard[pos].style.backgroundColor =
+          'rgb(166, 195, 111)';
+        getBoard[movePos].removeChild(getBoard[movePos].firstChild)
+        if (moveColor === "white") { whiteCheckersList = whiteCheckersList.filter(x => x.position !== movePos) }
+        if (moveColor === "black") { blackCheckersList = blackCheckersList.filter(x => x.position !== movePos) }
+      }
+      if (selectedCheckerExistsInMustMoves.mustUpRightKicks && !selectedCheckerExistsInMustMoves.mustUpRightKicks.includes(moveIdx)) {
+        getBoard[selectedCheckerExistsInMustMoves.position].style.backgroundColor = 'red';
+        getBoard[selectedCheckerExistsInMustMoves.mustUpRightKicks[0]].style.backgroundColor =
+          'red';
+        const timer = setTimeout(() => { proceedDeletion(selectedCheckerExistsInMustMoves.mustUpRightKicks[0], moveIdx) }, 2000)
+        return
+      }
+      if (selectedCheckerExistsInMustMoves.mustUpLeftKicks && !selectedCheckerExistsInMustMoves.mustUpLeftKicks.includes(moveIdx)) {
+        getBoard[selectedCheckerExistsInMustMoves.position].style.backgroundColor = 'red';
+        getBoard[selectedCheckerExistsInMustMoves.mustUpLeftKicks[0]].style.backgroundColor =
+          'red';
+        const timer = setTimeout(() => { proceedDeletion(selectedCheckerExistsInMustMoves.mustUpLeftKicks[0], moveIdx) }, 2000)
+        return
+      }
+      if (selectedCheckerExistsInMustMoves.mustDownRightKicks && !selectedCheckerExistsInMustMoves.mustDownRightKicks.includes(moveIdx)) {
+        getBoard[selectedCheckerExistsInMustMoves.position].style.backgroundColor = 'red';
+        getBoard[selectedCheckerExistsInMustMoves.mustDownRightKicks[0]].style.backgroundColor =
+          'red';
+        const timer = setTimeout(() => { proceedDeletion(selectedCheckerExistsInMustMoves.mustDownRightKicks[0], moveIdx) }, 2000)
+        return
+      }
+      if (selectedCheckerExistsInMustMoves.mustDownLeftKicks && !selectedCheckerExistsInMustMoves.mustDownLeftKicks.includes(moveIdx)) {
+        getBoard[selectedCheckerExistsInMustMoves.position].style.backgroundColor = 'red';
+        getBoard[selectedCheckerExistsInMustMoves.mustDownLeftKicks[0]].style.backgroundColor =
+          'red';
+        const timer = setTimeout(() => { proceedDeletion(selectedCheckerExistsInMustMoves.mustDownLeftKicks[0], moveIdx) }, 2000)
+        return
+      }
+    }
+  }
+  console.log(whiteCheckersList)
+  console.log(blackCheckersList)
+}
+
 function queenMove(
   presentChecker,
   moveCoordinate,
@@ -227,23 +326,23 @@ function queenMove(
     mustUpRightKicks,
   } = calculateQueenMoves(activeChecker, checkerColor);
 
-  const removeQueenFromBoard = (availableMoves, moveCoordinate) => {
-    // ALSO NEED TO REMOVE QUEEN FROM CHECKERS ARRAY
+  // const removeQueenFromBoard = (availableMoves, moveCoordinate) => {
+  //   // ALSO NEED TO REMOVE QUEEN FROM CHECKERS ARRAY
 
-    const currentChecker = { ...activeChecker };
-    function proceedRemoval() {
-      getBoard[availableMoves[0]].style.backgroundColor = 'rgb(166, 195, 111)';
-      getBoard[currentChecker.position].style.backgroundColor =
-        'rgb(166, 195, 111)';
-      getBoard[moveCoordinate].removeChild(getBoard[moveCoordinate].firstChild);
-    }
+  //   const currentChecker = { ...activeChecker };
+  //   function proceedRemoval() {
+  //     getBoard[availableMoves[0]].style.backgroundColor = 'rgb(166, 195, 111)';
+  //     getBoard[currentChecker.position].style.backgroundColor =
+  //       'rgb(166, 195, 111)';
+  //     getBoard[moveCoordinate].removeChild(getBoard[moveCoordinate].firstChild);
+  //   }
 
-    if (!availableMoves.includes(moveCoordinate)) {
-      getBoard[availableMoves[0]].style.backgroundColor = 'red';
-      getBoard[currentChecker.position].style.backgroundColor = 'red';
-      const timer = setTimeout(proceedRemoval, 2000);
-    }
-  };
+  //   if (!availableMoves.includes(moveCoordinate)) {
+  //     getBoard[availableMoves[0]].style.backgroundColor = 'red';
+  //     getBoard[currentChecker.position].style.backgroundColor = 'red';
+  //     const timer = setTimeout(proceedRemoval, 2000);
+  //   }
+  // };
 
   if (moveCoordinate !== presentChecker.position) {
     // Make left up move with a queen
@@ -262,6 +361,7 @@ function queenMove(
             return { ...item, position: moveCoordinate };
           return item;
         });
+        blackCheckersList = blackCheckersList.filter(x => x.position !== allowedUpLeftKicks[0])
       }
       if (checkerColor === 'black') {
         blackCheckersList = blackCheckersList.map((item) => {
@@ -269,6 +369,7 @@ function queenMove(
             return { ...item, position: moveCoordinate };
           return item;
         });
+        whiteCheckersList = whiteCheckersList.filter(x => x.position !== allowedUpLeftKicks[0])
       }
       // Reset moves
       presentChecker.color = '';
@@ -292,6 +393,7 @@ function queenMove(
             return { ...item, position: moveCoordinate };
           return item;
         });
+        blackCheckersList = blackCheckersList.filter(x => x.position !== allowedDownRightKicks[0])
       }
       if (checkerColor === 'black') {
         blackCheckersList = blackCheckersList.map((item) => {
@@ -299,6 +401,7 @@ function queenMove(
             return { ...item, position: moveCoordinate };
           return item;
         });
+        whiteCheckersList = whiteCheckersList.filter(x => x.position !== allowedDownRightKicks[0])
       }
       // Reset moves
       presentChecker.color = '';
@@ -322,6 +425,7 @@ function queenMove(
             return { ...item, position: moveCoordinate };
           return item;
         });
+        blackCheckersList = blackCheckersList.filter(x => x.position !== allowedUpRightKicks[0])
       }
       if (checkerColor === 'black') {
         blackCheckersList = blackCheckersList.map((item) => {
@@ -329,6 +433,7 @@ function queenMove(
             return { ...item, position: moveCoordinate };
           return item;
         });
+        whiteCheckersList = whiteCheckersList.filter(x => x.position !== allowedUpRightKicks[0])
       }
       // Reset moves
       presentChecker.color = '';
@@ -352,6 +457,7 @@ function queenMove(
             return { ...item, position: moveCoordinate };
           return item;
         });
+        blackCheckersList = blackCheckersList.filter(x => x.position !== allowedDownLeftKicks[0])
       }
       if (checkerColor === 'black') {
         blackCheckersList = blackCheckersList.map((item) => {
@@ -359,6 +465,7 @@ function queenMove(
             return { ...item, position: moveCoordinate };
           return item;
         });
+        whiteCheckersList = whiteCheckersList.filter(x => x.position !== allowedDownLeftKicks[0])
       }
       // Reset moves
       presentChecker.color = '';
@@ -419,7 +526,7 @@ function queenMove(
     //   return;
     // }
 
-    otherCheckerMoveValidity(
+    otherQueenCheckersMoveValidity(
       moveCoordinate,
       activeChecker,
       presentCheckerColor,
