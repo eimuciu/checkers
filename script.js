@@ -1,5 +1,6 @@
 // ***todos***
-// Kai yra du galimi kirtimai, bet su vienu tarkim paeini tiesiog i sona galimai pazymi sekanti kirtimo varianta, bet istrina saske su kuria buvo paeita i sona
+// Kai pazymimas neteisingas ejimas ir nepasibaigus taimeriui selectinamas priesininko saske tada susiglitchina neteisingu ejimu spalvos
+// Reikia padaryti timeri ir steperi del keliu galimu ejimu
 
 const body = document.body;
 body.style.padding = '50px';
