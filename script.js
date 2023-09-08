@@ -1,5 +1,5 @@
 // ***todos***
-// Kai pazymimas neteisingas ejimas ir nepasibaigus taimeriui selectinamas priesininko saske tada susiglitchina neteisingu ejimu spalvos
+// Kai pazymimas neteisingas ejimas ir nepasibaigus taimeriui selectinama priesininko saske tada susiglitchina neteisingu ejimu spalvos
 // Reikia padaryti timeri ir steperi del keliu galimu ejimu
 
 const body = document.body;
