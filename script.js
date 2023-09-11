@@ -1,6 +1,6 @@
 // ***todos***
 // Kai pazymimas neteisingas ejimas ir nepasibaigus taimeriui selectinama priesininko saske tada susiglitchina neteisingu ejimu spalvos
-// Reikia padaryti timeri ir steperi del keliu galimu ejimu
+// Kai dama turi kelis kirtimus i skirtingus sonus netgi nukirtus kazkuri viena ismeta klaida ir dama pasalinama is zaidimo
 
 const body = document.body;
 body.style.padding = '50px';
@@ -582,63 +582,63 @@ const createBoard = () => {
   }
 };
 
-// const createBoard = () => {
-//   for (let i = 0; i < rows; i++) {
-//     for (let y = 0; y < columns; y++) {
-//       if (i === 0 || i === 1 || i === 2) {
-//         if ((i % 2 === 0) & (y % 2 === 1)) {
-//           board.appendChild(createCell(null, '#A6C36F'));
-//           // whiteCheckersList.push({
-//           //   isQueen: false,
-//           //   position: i === 0 ? i * 8 + y : i === 2 ? i * 8 + y : null,
-//           // });
-//         } else if ((i % 2 === 1) & (y % 2 === 0)) {
-//           board.appendChild(createCell(null, '#A6C36F'));
-//           // blackCheckersList.push({
-//           //   isQueen: false,
-//           //   position: i === 1 ? i * 8 + y : null,
-//           // });
-//         } else {
-//           board.appendChild(createCell());
-//         }
-//       } else if (i === rows - 1 || i === rows - 2 || i === rows - 3) {
-//         if ((i % 2 === 0) & (y % 2 === 1)) {
-//           board.appendChild(createCell(null, '#A6C36F'));
-//           // blackCheckersList.push({
-//           //   isQueen: false,
-//           //   position: i === rows - 2 ? i * 8 + y : null,
-//           // });
-//         } else if ((i % 2 === 1) & (y % 2 === 0)) {
-//           if (y === 2) {
-//             board.appendChild(createCell(null, '#A6C36F'));
-//             // whiteCheckersList.push({
-//             //   isQueen: true,
-//             //   position:
-//             //     i === rows - 1 ? i * 8 + y : rows - 3 ? i * 8 + y : null,
-//             // });
-//           } else {
-//             board.appendChild(createCell(null, '#A6C36F'));
-//           }
+const createBoardTesting = () => {
+  for (let i = 0; i < rows; i++) {
+    for (let y = 0; y < columns; y++) {
+      if (i === 0 || i === 1 || i === 2) {
+        if ((i % 2 === 0) & (y % 2 === 1)) {
+          board.appendChild(createCell(null, '#A6C36F'));
+          // whiteCheckersList.push({
+          //   isQueen: false,
+          //   position: i === 0 ? i * 8 + y : i === 2 ? i * 8 + y : null,
+          // });
+        } else if ((i % 2 === 1) & (y % 2 === 0)) {
+          board.appendChild(createCell(null, '#A6C36F'));
+          // blackCheckersList.push({
+          //   isQueen: false,
+          //   position: i === 1 ? i * 8 + y : null,
+          // });
+        } else {
+          board.appendChild(createCell());
+        }
+      } else if (i === rows - 1 || i === rows - 2 || i === rows - 3) {
+        if ((i % 2 === 0) & (y % 2 === 1)) {
+          board.appendChild(createCell(null, '#A6C36F'));
+          // blackCheckersList.push({
+          //   isQueen: false,
+          //   position: i === rows - 2 ? i * 8 + y : null,
+          // });
+        } else if ((i % 2 === 1) & (y % 2 === 0)) {
+          if (y === 2) {
+            board.appendChild(createCell(null, '#A6C36F'));
+            // whiteCheckersList.push({
+            //   isQueen: true,
+            //   position:
+            //     i === rows - 1 ? i * 8 + y : rows - 3 ? i * 8 + y : null,
+            // });
+          } else {
+            board.appendChild(createCell(null, '#A6C36F'));
+          }
 
-//           // blackCheckersList.push({
-//           //   isQueen: false,
-//           //   position: i === rows - 1 ? i * 8 + y : rows - 3 ? i * 8 + y : null,
-//           // });
-//         } else {
-//           board.appendChild(createCell());
-//         }
-//       } else {
-//         if ((i % 2 === 0) & (y % 2 === 1)) {
-//           board.appendChild(createCell(null, '#A6C36F'));
-//         } else if ((i % 2 === 1) & (y % 2 === 0)) {
-//           board.appendChild(createCell(null, '#A6C36F'));
-//         } else {
-//           board.appendChild(createCell());
-//         }
-//       }
-//     }
-//   }
-// };
+          // blackCheckersList.push({
+          //   isQueen: false,
+          //   position: i === rows - 1 ? i * 8 + y : rows - 3 ? i * 8 + y : null,
+          // });
+        } else {
+          board.appendChild(createCell());
+        }
+      } else {
+        if ((i % 2 === 0) & (y % 2 === 1)) {
+          board.appendChild(createCell(null, '#A6C36F'));
+        } else if ((i % 2 === 1) & (y % 2 === 0)) {
+          board.appendChild(createCell(null, '#A6C36F'));
+        } else {
+          board.appendChild(createCell());
+        }
+      }
+    }
+  }
+};
 
 const removeColor = (index) => {
   for (let i = 0; i < getBoard.length; i++) {
@@ -980,8 +980,9 @@ const checkerMoveClickListener = () => {
           if (!timer.compareCheckers(selectedChecker)) {
             return;
           }
-          if (whosMove === 'white')
+          if (whosMove === 'white') {
             executeWhiteCheckerKicks(i, selectedChecker);
+          }
           if (whosMove === 'black')
             executeBlackCheckersKicks(i, selectedChecker);
           return;
@@ -1087,7 +1088,7 @@ const checkerMoveClickListener = () => {
               'black',
               createBlackQueen,
             );
-          
+
           // Black checker moving up right
           if (
             i === selectedChecker.position - 7 &&
@@ -1160,12 +1161,21 @@ const checkerMoveClickListener = () => {
 
 body.appendChild(createMainContainer(board));
 createBoard();
+// createBoardTesting();
 
-// getBoard[7].appendChild(createWhiteChecker());
+// getBoard[56].appendChild(createWhiteQueen());
 // getBoard[14].appendChild(createBlackChecker());
+// getBoard[10].appendChild(createBlackChecker());
+// getBoard[12].appendChild(createBlackChecker());
+// getBoard[42].appendChild(createBlackChecker());
+// getBoard[26].appendChild(createBlackChecker());
 // getBoard[28].appendChild(createBlackChecker());
-// whiteCheckersList.push({ isQueen: false, position: 7 });
+// whiteCheckersList.push({ isQueen: true, position: 56 });
 // blackCheckersList.push({ isQueen: false, position: 14 });
+// blackCheckersList.push({ isQueen: false, position: 10 });
+// blackCheckersList.push({ isQueen: false, position: 12 });
+// blackCheckersList.push({ isQueen: false, position: 42 });
+// blackCheckersList.push({ isQueen: false, position: 26 });
 // blackCheckersList.push({ isQueen: false, position: 28 });
 
 checkerClickListener();

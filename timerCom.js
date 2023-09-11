@@ -9,6 +9,7 @@ class Timer {
   }
 
   startTimer() {
+    this.timerEl.style.visibility = 'initial';
     this.resetTimer();
     this.myTimerInterval = setInterval(() => {
       this.timeLeft -= 0.1;
@@ -31,7 +32,10 @@ class Timer {
         selectedChecker.position = null;
         whosMove = 'white';
       }
+      getBoard[this.currentChecker.position].firstChild.style.backgroundColor =
+        this.currentChecker.color === 'white' ? 'white' : 'black';
       this.resetChecker();
+      this.timerEl.style.visibility = 'hidden';
     }
   }
 
@@ -44,8 +48,10 @@ class Timer {
     this.currentChecker = checker;
     if (this.myTimerInterval) {
       this.resetTimer();
+      whosMove = checker.color;
     } else {
       this.startTimer();
+      whosMove = checker.color;
     }
   }
 
