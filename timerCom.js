@@ -1,40 +1,76 @@
 class Timer {
-    timerEl
-    timeLeft = 2
-    myTimer
+  timerEl = document.getElementById('timer');
+  timeLeft = 2;
+  myTimerInterval = null;
+  currentChecker = null;
 
-    constructor(contEl) {
-        this.timerEl = contEl
-        this.timerEl.innerHTML = this.timeLeft
-        this.startTimer()
+  constructor() {
+    this.timerEl.innerHTML = this.timeLeft;
+  }
+
+  startTimer() {
+    this.resetTimer();
+    this.myTimerInterval = setInterval(() => {
+      this.timeLeft -= 0.1;
+      this.timerEl.innerHTML = Math.abs(this.timeLeft).toFixed(2);
+      this.stopTimer();
+    }, 100);
+  }
+
+  stopTimer() {
+    if (Math.abs(this.timeLeft).toFixed(2) === '0.00') {
+      clearInterval(this.myTimerInterval);
+      this.myTimerInterval = null;
+      if (this.currentChecker.color === 'white') {
+        selectedChecker.color = '';
+        selectedChecker.position = null;
+        whosMove = 'black';
+      }
+      if (this.currentChecker.color === 'black') {
+        selectedChecker.color = '';
+        selectedChecker.position = null;
+        whosMove = 'white';
+      }
+      this.resetChecker();
     }
+  }
 
-    startTimer() {
-        this.timeLeft = 2
-        this.myTimer = setInterval(() => {
-            this.timeLeft -= 0.10
-            this.timerEl.innerHTML = Math.abs(this.timeLeft).toFixed(2)
-            this.stopTimer()
-        }, 100)
+  resetTimer() {
+    this.timeLeft = 2;
+  }
+
+  addChecker(checker) {
+    console.log('Timer interval', this.myTimerInterval);
+    this.currentChecker = checker;
+    if (this.myTimerInterval) {
+      this.resetTimer();
+    } else {
+      this.startTimer();
     }
+  }
 
-    stopTimer() {
-        if (Math.abs(this.timeLeft).toFixed(2) === "0.00") {
-            clearInterval(this.myTimer)
-        }
+  compareCheckers(checker) {
+    if (
+      this.currentChecker &&
+      this.currentChecker.position === checker.position
+    ) {
+      return true;
+    } else {
+      return false;
     }
+  }
 
+  hasKickHappened() {
+    if (this.currentChecker) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  resetChecker() {
+    this.currentChecker = null;
+  }
 }
 
-const containerEl = document.getElementById("timer")
-const timer1 = new Timer(containerEl)
-
-const resetButton = document.getElementById("resetTimer")
-resetButton.addEventListener("click", () => {
-    timer1.timeLeft = 2
-})
-
-const restartButton = document.getElementById("restartTimer")
-restartButton.addEventListener("click", () => {
-    timer1.startTimer()
-})
+const timer = new Timer();

@@ -108,7 +108,7 @@ const isLeftDownKickValid = (checker, kickColor) => {
     getBoard[checker.position + 14] &&
     getBoard[checker.position + 7].childNodes.length > 0 &&
     getBoard[checker.position + 7].firstChild.getAttribute('name') ===
-    kickColor &&
+      kickColor &&
     getBoard[checker.position + 14].childNodes.length <= 0
   ) {
     if (!isLeftWallObstacle(checker) && !isBottomWallObstacle(checker)) {
@@ -125,7 +125,7 @@ const isRightDownKickValid = (checker, kickColor) => {
     getBoard[checker.position + 18] &&
     getBoard[checker.position + 9].childNodes.length > 0 &&
     getBoard[checker.position + 9].firstChild.getAttribute('name') ===
-    kickColor &&
+      kickColor &&
     getBoard[checker.position + 18].childNodes.length <= 0
   ) {
     if (!isRightWallObstacle(checker) && !isBottomWallObstacle(checker)) {
@@ -142,7 +142,7 @@ const isRightUpKickValid = (checker, kickColor) => {
     getBoard[checker.position - 14] &&
     getBoard[checker.position - 7].childNodes.length > 0 &&
     getBoard[checker.position - 7].firstChild.getAttribute('name') ===
-    kickColor &&
+      kickColor &&
     getBoard[checker.position - 14].childNodes.length <= 0
   ) {
     if (!isRightWallObstacle(checker) && !isTopWallObstacle(checker)) {
@@ -159,7 +159,7 @@ const isLeftUpKickValid = (checker, kickColor) => {
     getBoard[checker.position - 18] &&
     getBoard[checker.position - 9].childNodes.length > 0 &&
     getBoard[checker.position - 9].firstChild.getAttribute('name') ===
-    kickColor &&
+      kickColor &&
     getBoard[checker.position - 18].childNodes.length <= 0
   ) {
     if (!isLeftWallObstacle(checker) && !isTopWallObstacle(checker)) {
@@ -741,13 +741,17 @@ function removeCheckerFromArray(arr, pos) {
 }
 
 function isMoveMadeWithOrWitoutAMustMove(movingToPosition, selectedChecker) {
-  console.log("Simple checker kick function")
+  console.log('Simple checker kick function');
   if (selectedChecker.position) {
     if (!mustMoves.length && !queenMustMoves.length) {
-      return
+      return;
     }
     if (!mustMoves.length) {
-      otherQueenCheckersMoveValidity(movingToPosition, selectedChecker, whosMove)
+      otherQueenCheckersMoveValidity(
+        movingToPosition,
+        selectedChecker,
+        whosMove,
+      );
       return;
     }
     const findSelectedChecker = mustMoves.find(
@@ -757,7 +761,7 @@ function isMoveMadeWithOrWitoutAMustMove(movingToPosition, selectedChecker) {
       findSelectedChecker &&
       findSelectedChecker.hasOwnProperty('moves') &&
       movingToPosition ===
-      eval(selectedChecker.position + findSelectedChecker.moves[0])
+        eval(selectedChecker.position + findSelectedChecker.moves[0])
     ) {
       const removePositionNumber = findSelectedChecker.moves[0].slice(1) / 2;
       const formatedRemovePosition =
@@ -796,7 +800,7 @@ function isMoveMadeWithOrWitoutAMustMove(movingToPosition, selectedChecker) {
       findSelectedChecker &&
       findSelectedChecker.hasOwnProperty('moves') &&
       movingToPosition !==
-      eval(selectedChecker.position + findSelectedChecker.moves[0])
+        eval(selectedChecker.position + findSelectedChecker.moves[0])
     ) {
       getBoard[mustMoves[0].checker.position].style.backgroundColor = 'red';
       getBoard[
@@ -910,18 +914,19 @@ function isMoveMadeWithOrWitoutAMustMove(movingToPosition, selectedChecker) {
     const timer = setTimeout(proceedRemoval, 2000);
   }
 
-  console.log(whiteCheckersList)
-  console.log(blackCheckersList)
+  console.log(whiteCheckersList);
+  console.log(blackCheckersList);
 }
 
 function createEachQueenMustMoves() {
-  const whiteQueens = whiteCheckersList.filter((x) => x.isQueen).map(x => ({ ...x }))
-  const blackQueens = blackCheckersList.filter((x) => x.isQueen).map(x => ({ ...x }))
+  const whiteQueens = whiteCheckersList
+    .filter((x) => x.isQueen)
+    .map((x) => ({ ...x }));
+  const blackQueens = blackCheckersList
+    .filter((x) => x.isQueen)
+    .map((x) => ({ ...x }));
   queenMustMoves = [];
-  const filterOutAllQueens =
-    whosMove === 'white'
-      ? whiteQueens
-      : blackQueens;
+  const filterOutAllQueens = whosMove === 'white' ? whiteQueens : blackQueens;
   if (filterOutAllQueens.length) {
     for (let i = 0; i < filterOutAllQueens.length; i++) {
       const {
@@ -962,12 +967,21 @@ function createEachQueenMustMoves() {
   }
 }
 
-
-
 const checkerMoveClickListener = () => {
   for (let i = 0; i < getBoard.length; i++) {
     getBoard[i].addEventListener('click', () => {
       if (selectedChecker.position) {
+        // Compare if the same checker selected after a kick if kick happened
+        if (timer.hasKickHappened()) {
+          if (!timer.compareCheckers(selectedChecker)) {
+            return;
+          }
+          if (whosMove === 'white')
+            executeWhiteCheckerKicks(i, selectedChecker);
+          if (whosMove === 'black')
+            executeBlackCheckersKicks(i, selectedChecker);
+          return;
+        }
         // White checker move
         if (selectedChecker.color === 'white' && whosMove === 'white') {
           // Create queen must moves
@@ -1049,125 +1063,7 @@ const checkerMoveClickListener = () => {
             selectedChecker.position = null;
             whosMove = 'black';
           }
-          // White checker beat down left
-          if (
-            getBoard[selectedChecker.position + 7] &&
-            getBoard[selectedChecker.position + 14] &&
-            getBoard[selectedChecker.position + 7].childNodes.length > 0 &&
-            getBoard[selectedChecker.position + 7].firstChild.getAttribute(
-              'name',
-            ) !== 'white' &&
-            getBoard[selectedChecker.position + 14].childNodes.length <= 0 &&
-            i === selectedChecker.position + 14
-          ) {
-            getBoard[i].appendChild(createWhiteChecker());
-            getBoard[selectedChecker.position].removeChild(
-              getBoard[selectedChecker.position].firstChild,
-            );
-            getBoard[selectedChecker.position + 7].removeChild(
-              getBoard[selectedChecker.position + 7].firstChild,
-            );
-
-            //Queen making!
-            whiteQueenMaking(14, i);
-
-            // Move validity
-            isMoveMadeWithOrWitoutAMustMove(i, selectedChecker);
-
-            //Resetting moves
-            selectedChecker.color = '';
-            selectedChecker.position = null;
-            whosMove = 'black';
-          }
-
-          // White checker beat down right
-          if (
-            getBoard[selectedChecker.position + 9] &&
-            getBoard[selectedChecker.position + 18] &&
-            getBoard[selectedChecker.position + 9].childNodes.length > 0 &&
-            getBoard[selectedChecker.position + 9].firstChild.getAttribute(
-              'name',
-            ) !== 'white' &&
-            getBoard[selectedChecker.position + 18].childNodes.length <= 0 &&
-            i === selectedChecker.position + 18
-          ) {
-            getBoard[i].appendChild(createWhiteChecker());
-            getBoard[selectedChecker.position].removeChild(
-              getBoard[selectedChecker.position].firstChild,
-            );
-            getBoard[selectedChecker.position + 9].removeChild(
-              getBoard[selectedChecker.position + 9].firstChild,
-            );
-
-            //Queen making
-            whiteQueenMaking(18, i);
-
-            // Move validity
-            isMoveMadeWithOrWitoutAMustMove(i, selectedChecker);
-
-            //Resetting moves
-            selectedChecker.color = '';
-            selectedChecker.position = null;
-            whosMove = 'black';
-          }
-
-          // White checker beat back right
-          if (
-            selectedChecker.position &&
-            getBoard[selectedChecker.position - 7] &&
-            getBoard[selectedChecker.position - 14] &&
-            getBoard[selectedChecker.position - 7].childNodes.length > 0 &&
-            getBoard[selectedChecker.position - 7].firstChild.getAttribute(
-              'name',
-            ) !== 'white' &&
-            getBoard[selectedChecker.position - 14].childNodes.length <= 0 &&
-            i === selectedChecker.position - 14
-          ) {
-            getBoard[i].appendChild(createWhiteChecker());
-            getBoard[selectedChecker.position].removeChild(
-              getBoard[selectedChecker.position].firstChild,
-            );
-            getBoard[selectedChecker.position - 7].removeChild(
-              getBoard[selectedChecker.position - 7].firstChild,
-            );
-
-            // Move validity
-            isMoveMadeWithOrWitoutAMustMove(i, selectedChecker);
-
-            // Resetting moves
-            selectedChecker.color = '';
-            selectedChecker.position = null;
-            whosMove = 'black';
-          }
-
-          // White checker beat back left
-          if (
-            selectedChecker.position &&
-            getBoard[selectedChecker.position - 9] &&
-            getBoard[selectedChecker.position - 18] &&
-            getBoard[selectedChecker.position - 9].childNodes.length > 0 &&
-            getBoard[selectedChecker.position - 9].firstChild.getAttribute(
-              'name',
-            ) !== 'white' &&
-            getBoard[selectedChecker.position - 18].childNodes.length <= 0 &&
-            i === selectedChecker.position - 18
-          ) {
-            getBoard[i].appendChild(createWhiteChecker());
-            getBoard[selectedChecker.position].removeChild(
-              getBoard[selectedChecker.position].firstChild,
-            );
-            getBoard[selectedChecker.position - 9].removeChild(
-              getBoard[selectedChecker.position - 9].firstChild,
-            );
-
-            // Move validity
-            isMoveMadeWithOrWitoutAMustMove(i, selectedChecker);
-
-            // Resetting moves
-            selectedChecker.color = '';
-            selectedChecker.position = null;
-            whosMove = 'black';
-          }
+          executeWhiteCheckerKicks(i, selectedChecker);
         }
 
         // Black checker move
@@ -1250,126 +1146,7 @@ const checkerMoveClickListener = () => {
             selectedChecker.position = null;
             whosMove = 'white';
           }
-
-          // Black checker beat up right
-          if (
-            selectedChecker.position &&
-            getBoard[selectedChecker.position - 7] &&
-            getBoard[selectedChecker.position - 14] &&
-            getBoard[selectedChecker.position - 7].childNodes.length > 0 &&
-            getBoard[selectedChecker.position - 7].firstChild.getAttribute(
-              'name',
-            ) !== 'black' &&
-            getBoard[selectedChecker.position - 14].childNodes.length <= 0 &&
-            i === selectedChecker.position - 14
-          ) {
-            getBoard[i].appendChild(createBlackChecker());
-            getBoard[selectedChecker.position].removeChild(
-              getBoard[selectedChecker.position].firstChild,
-            );
-            getBoard[selectedChecker.position - 7].removeChild(
-              getBoard[selectedChecker.position - 7].firstChild,
-            );
-            // Queen making
-            blackQueenMaking(-14, i);
-
-            // Move validity
-            isMoveMadeWithOrWitoutAMustMove(i, selectedChecker);
-
-            // Resetting moves
-            selectedChecker.color = '';
-            selectedChecker.position = null;
-            whosMove = 'white';
-          }
-
-          // Black checker beat up left
-          if (
-            selectedChecker.position &&
-            getBoard[selectedChecker.position - 9] &&
-            getBoard[selectedChecker.position - 18] &&
-            getBoard[selectedChecker.position - 9].childNodes.length > 0 &&
-            getBoard[selectedChecker.position - 9].firstChild.getAttribute(
-              'name',
-            ) !== 'black' &&
-            getBoard[selectedChecker.position - 18].childNodes.length <= 0 &&
-            i === selectedChecker.position - 18
-          ) {
-            getBoard[i].appendChild(createBlackChecker());
-            getBoard[selectedChecker.position].removeChild(
-              getBoard[selectedChecker.position].firstChild,
-            );
-            getBoard[selectedChecker.position - 9].removeChild(
-              getBoard[selectedChecker.position - 9].firstChild,
-            );
-            // Queen making
-            blackQueenMaking(-18, i);
-
-            // Move validity
-            isMoveMadeWithOrWitoutAMustMove(i, selectedChecker);
-
-            // Resetting moves
-            selectedChecker.color = '';
-            selectedChecker.position = null;
-            whosMove = 'white';
-          }
-
-          // Black checker beat back left
-          if (
-            selectedChecker.position &&
-            getBoard[selectedChecker.position + 7] &&
-            getBoard[selectedChecker.position + 14] &&
-            getBoard[selectedChecker.position + 7].childNodes.length > 0 &&
-            getBoard[selectedChecker.position + 7].firstChild.getAttribute(
-              'name',
-            ) !== 'black' &&
-            getBoard[selectedChecker.position + 14].childNodes.length <= 0 &&
-            i === selectedChecker.position + 14
-          ) {
-            getBoard[i].appendChild(createBlackChecker());
-            getBoard[selectedChecker.position].removeChild(
-              getBoard[selectedChecker.position].firstChild,
-            );
-            getBoard[selectedChecker.position + 7].removeChild(
-              getBoard[selectedChecker.position + 7].firstChild,
-            );
-
-            // Move validity
-            isMoveMadeWithOrWitoutAMustMove(i, selectedChecker);
-
-            // Resetting moves
-            selectedChecker.color = '';
-            selectedChecker.position = null;
-            whosMove = 'white';
-          }
-
-          // Black checker beat back right
-          if (
-            selectedChecker.position &&
-            getBoard[selectedChecker.position + 9] &&
-            getBoard[selectedChecker.position + 18] &&
-            getBoard[selectedChecker.position + 9].childNodes.length > 0 &&
-            getBoard[selectedChecker.position + 9].firstChild.getAttribute(
-              'name',
-            ) !== 'black' &&
-            getBoard[selectedChecker.position + 18].childNodes.length <= 0 &&
-            i === selectedChecker.position + 18
-          ) {
-            getBoard[i].appendChild(createBlackChecker());
-            getBoard[selectedChecker.position].removeChild(
-              getBoard[selectedChecker.position].firstChild,
-            );
-            getBoard[selectedChecker.position + 9].removeChild(
-              getBoard[selectedChecker.position + 9].firstChild,
-            );
-
-            // Move validity
-            isMoveMadeWithOrWitoutAMustMove(i, selectedChecker);
-
-            // Resetting moves
-            selectedChecker.color = '';
-            selectedChecker.position = null;
-            whosMove = 'white';
-          }
+          executeBlackCheckersKicks(i, selectedChecker);
         }
       }
     });
@@ -1388,3 +1165,252 @@ createBoard();
 
 checkerClickListener();
 checkerMoveClickListener();
+
+function executeWhiteCheckerKicks(i, selectedChecker) {
+  // White checker beat down left
+  if (
+    getBoard[selectedChecker.position + 7] &&
+    getBoard[selectedChecker.position + 14] &&
+    getBoard[selectedChecker.position + 7].childNodes.length > 0 &&
+    getBoard[selectedChecker.position + 7].firstChild.getAttribute('name') !==
+      'white' &&
+    getBoard[selectedChecker.position + 14].childNodes.length <= 0 &&
+    i === selectedChecker.position + 14
+  ) {
+    getBoard[i].appendChild(createWhiteChecker());
+    getBoard[selectedChecker.position].removeChild(
+      getBoard[selectedChecker.position].firstChild,
+    );
+    getBoard[selectedChecker.position + 7].removeChild(
+      getBoard[selectedChecker.position + 7].firstChild,
+    );
+
+    //Queen making!
+    whiteQueenMaking(14, i);
+
+    // Move validity
+    isMoveMadeWithOrWitoutAMustMove(i, selectedChecker);
+
+    timer.addChecker({ color: 'white', position: i });
+
+    // //Resetting moves
+    // selectedChecker.color = '';
+    // selectedChecker.position = null;
+    // whosMove = 'black';
+  }
+
+  // White checker beat down right
+  if (
+    getBoard[selectedChecker.position + 9] &&
+    getBoard[selectedChecker.position + 18] &&
+    getBoard[selectedChecker.position + 9].childNodes.length > 0 &&
+    getBoard[selectedChecker.position + 9].firstChild.getAttribute('name') !==
+      'white' &&
+    getBoard[selectedChecker.position + 18].childNodes.length <= 0 &&
+    i === selectedChecker.position + 18
+  ) {
+    getBoard[i].appendChild(createWhiteChecker());
+    getBoard[selectedChecker.position].removeChild(
+      getBoard[selectedChecker.position].firstChild,
+    );
+    getBoard[selectedChecker.position + 9].removeChild(
+      getBoard[selectedChecker.position + 9].firstChild,
+    );
+
+    //Queen making
+    whiteQueenMaking(18, i);
+
+    // Move validity
+    isMoveMadeWithOrWitoutAMustMove(i, selectedChecker);
+
+    timer.addChecker({ color: 'white', position: i });
+
+    //Resetting moves
+    // selectedChecker.color = '';
+    // selectedChecker.position = null;
+    // whosMove = 'black';
+  }
+
+  // White checker beat back right
+  if (
+    selectedChecker.position &&
+    getBoard[selectedChecker.position - 7] &&
+    getBoard[selectedChecker.position - 14] &&
+    getBoard[selectedChecker.position - 7].childNodes.length > 0 &&
+    getBoard[selectedChecker.position - 7].firstChild.getAttribute('name') !==
+      'white' &&
+    getBoard[selectedChecker.position - 14].childNodes.length <= 0 &&
+    i === selectedChecker.position - 14
+  ) {
+    getBoard[i].appendChild(createWhiteChecker());
+    getBoard[selectedChecker.position].removeChild(
+      getBoard[selectedChecker.position].firstChild,
+    );
+    getBoard[selectedChecker.position - 7].removeChild(
+      getBoard[selectedChecker.position - 7].firstChild,
+    );
+
+    // Move validity
+    isMoveMadeWithOrWitoutAMustMove(i, selectedChecker);
+
+    timer.addChecker({ color: 'white', position: i });
+
+    // Resetting moves
+    // selectedChecker.color = '';
+    // selectedChecker.position = null;
+    // whosMove = 'black';
+  }
+
+  // White checker beat back left
+  if (
+    selectedChecker.position &&
+    getBoard[selectedChecker.position - 9] &&
+    getBoard[selectedChecker.position - 18] &&
+    getBoard[selectedChecker.position - 9].childNodes.length > 0 &&
+    getBoard[selectedChecker.position - 9].firstChild.getAttribute('name') !==
+      'white' &&
+    getBoard[selectedChecker.position - 18].childNodes.length <= 0 &&
+    i === selectedChecker.position - 18
+  ) {
+    getBoard[i].appendChild(createWhiteChecker());
+    getBoard[selectedChecker.position].removeChild(
+      getBoard[selectedChecker.position].firstChild,
+    );
+    getBoard[selectedChecker.position - 9].removeChild(
+      getBoard[selectedChecker.position - 9].firstChild,
+    );
+
+    // Move validity
+    isMoveMadeWithOrWitoutAMustMove(i, selectedChecker);
+
+    timer.addChecker({ color: 'white', position: i });
+
+    // Resetting moves
+    // selectedChecker.color = '';
+    // selectedChecker.position = null;
+    // whosMove = 'black';
+  }
+}
+
+function executeBlackCheckersKicks(i, selectedChecker) {
+  // Black checker beat up right
+  if (
+    selectedChecker.position &&
+    getBoard[selectedChecker.position - 7] &&
+    getBoard[selectedChecker.position - 14] &&
+    getBoard[selectedChecker.position - 7].childNodes.length > 0 &&
+    getBoard[selectedChecker.position - 7].firstChild.getAttribute('name') !==
+      'black' &&
+    getBoard[selectedChecker.position - 14].childNodes.length <= 0 &&
+    i === selectedChecker.position - 14
+  ) {
+    getBoard[i].appendChild(createBlackChecker());
+    getBoard[selectedChecker.position].removeChild(
+      getBoard[selectedChecker.position].firstChild,
+    );
+    getBoard[selectedChecker.position - 7].removeChild(
+      getBoard[selectedChecker.position - 7].firstChild,
+    );
+    // Queen making
+    blackQueenMaking(-14, i);
+
+    // Move validity
+    isMoveMadeWithOrWitoutAMustMove(i, selectedChecker);
+
+    timer.addChecker({ color: 'black', position: i });
+
+    // Resetting moves
+    // selectedChecker.color = '';
+    // selectedChecker.position = null;
+    // whosMove = 'white';
+  }
+  // Black checker beat up left
+  if (
+    selectedChecker.position &&
+    getBoard[selectedChecker.position - 9] &&
+    getBoard[selectedChecker.position - 18] &&
+    getBoard[selectedChecker.position - 9].childNodes.length > 0 &&
+    getBoard[selectedChecker.position - 9].firstChild.getAttribute('name') !==
+      'black' &&
+    getBoard[selectedChecker.position - 18].childNodes.length <= 0 &&
+    i === selectedChecker.position - 18
+  ) {
+    getBoard[i].appendChild(createBlackChecker());
+    getBoard[selectedChecker.position].removeChild(
+      getBoard[selectedChecker.position].firstChild,
+    );
+    getBoard[selectedChecker.position - 9].removeChild(
+      getBoard[selectedChecker.position - 9].firstChild,
+    );
+    // Queen making
+    blackQueenMaking(-18, i);
+
+    // Move validity
+    isMoveMadeWithOrWitoutAMustMove(i, selectedChecker);
+
+    timer.addChecker({ color: 'black', position: i });
+
+    // Resetting moves
+    // selectedChecker.color = '';
+    // selectedChecker.position = null;
+    // whosMove = 'white';
+  }
+  // Black checker beat back left
+  if (
+    selectedChecker.position &&
+    getBoard[selectedChecker.position + 7] &&
+    getBoard[selectedChecker.position + 14] &&
+    getBoard[selectedChecker.position + 7].childNodes.length > 0 &&
+    getBoard[selectedChecker.position + 7].firstChild.getAttribute('name') !==
+      'black' &&
+    getBoard[selectedChecker.position + 14].childNodes.length <= 0 &&
+    i === selectedChecker.position + 14
+  ) {
+    getBoard[i].appendChild(createBlackChecker());
+    getBoard[selectedChecker.position].removeChild(
+      getBoard[selectedChecker.position].firstChild,
+    );
+    getBoard[selectedChecker.position + 7].removeChild(
+      getBoard[selectedChecker.position + 7].firstChild,
+    );
+
+    // Move validity
+    isMoveMadeWithOrWitoutAMustMove(i, selectedChecker);
+
+    timer.addChecker({ color: 'black', position: i });
+
+    // Resetting moves
+    // selectedChecker.color = '';
+    // selectedChecker.position = null;
+    // whosMove = 'white';
+  }
+  // Black checker beat back right
+  if (
+    selectedChecker.position &&
+    getBoard[selectedChecker.position + 9] &&
+    getBoard[selectedChecker.position + 18] &&
+    getBoard[selectedChecker.position + 9].childNodes.length > 0 &&
+    getBoard[selectedChecker.position + 9].firstChild.getAttribute('name') !==
+      'black' &&
+    getBoard[selectedChecker.position + 18].childNodes.length <= 0 &&
+    i === selectedChecker.position + 18
+  ) {
+    getBoard[i].appendChild(createBlackChecker());
+    getBoard[selectedChecker.position].removeChild(
+      getBoard[selectedChecker.position].firstChild,
+    );
+    getBoard[selectedChecker.position + 9].removeChild(
+      getBoard[selectedChecker.position + 9].firstChild,
+    );
+
+    // Move validity
+    isMoveMadeWithOrWitoutAMustMove(i, selectedChecker);
+
+    timer.addChecker({ color: 'black', position: i });
+
+    // Resetting moves
+    // selectedChecker.color = '';
+    // selectedChecker.position = null;
+    // whosMove = 'white';
+  }
+}
