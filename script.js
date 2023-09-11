@@ -593,11 +593,11 @@ const createBoard = () => {
 //           //   position: i === 0 ? i * 8 + y : i === 2 ? i * 8 + y : null,
 //           // });
 //         } else if ((i % 2 === 1) & (y % 2 === 0)) {
-//           board.appendChild(createCell(createBlackChecker(), '#A6C36F'));
-//           blackCheckersList.push({
-//             isQueen: false,
-//             position: i === 1 ? i * 8 + y : null,
-//           });
+//           board.appendChild(createCell(null, '#A6C36F'));
+//           // blackCheckersList.push({
+//           //   isQueen: false,
+//           //   position: i === 1 ? i * 8 + y : null,
+//           // });
 //         } else {
 //           board.appendChild(createCell());
 //         }
@@ -610,12 +610,12 @@ const createBoard = () => {
 //           // });
 //         } else if ((i % 2 === 1) & (y % 2 === 0)) {
 //           if (y === 2) {
-//             board.appendChild(createCell(createWhiteQueen(), '#A6C36F'));
-//             whiteCheckersList.push({
-//               isQueen: true,
-//               position:
-//                 i === rows - 1 ? i * 8 + y : rows - 3 ? i * 8 + y : null,
-//             });
+//             board.appendChild(createCell(null, '#A6C36F'));
+//             // whiteCheckersList.push({
+//             //   isQueen: true,
+//             //   position:
+//             //     i === rows - 1 ? i * 8 + y : rows - 3 ? i * 8 + y : null,
+//             // });
 //           } else {
 //             board.appendChild(createCell(null, '#A6C36F'));
 //           }
@@ -971,6 +971,10 @@ const checkerMoveClickListener = () => {
   for (let i = 0; i < getBoard.length; i++) {
     getBoard[i].addEventListener('click', () => {
       if (selectedChecker.position) {
+        // Create queen must moves
+        createEachQueenMustMoves();
+        //Check for any necessary moves
+        checkForNecessaryMovies();
         // Compare if the same checker selected after a kick if kick happened
         if (timer.hasKickHappened()) {
           if (!timer.compareCheckers(selectedChecker)) {
@@ -984,10 +988,10 @@ const checkerMoveClickListener = () => {
         }
         // White checker move
         if (selectedChecker.color === 'white' && whosMove === 'white') {
-          // Create queen must moves
-          createEachQueenMustMoves();
-          //Check for any necessary moves
-          checkForNecessaryMovies();
+          // // Create queen must moves
+          // createEachQueenMustMoves();
+          // //Check for any necessary moves
+          // checkForNecessaryMovies();
           // White queen moves
           const isCheckerAvailable = whiteCheckersList.find(
             (item) => item.position === selectedChecker.position,
@@ -1068,7 +1072,9 @@ const checkerMoveClickListener = () => {
 
         // Black checker move
         if (selectedChecker.color === 'black' && whosMove === 'black') {
-          createEachQueenMustMoves();
+          // createEachQueenMustMoves();
+          // //Check for any necessary moves
+          // checkForNecessaryMovies();
           // Black queen moves
           const isCheckerAvailable = blackCheckersList.find(
             (item) => item.position === selectedChecker.position,
@@ -1081,8 +1087,7 @@ const checkerMoveClickListener = () => {
               'black',
               createBlackQueen,
             );
-          //Check for any necessary moves
-          checkForNecessaryMovies();
+          
           // Black checker moving up right
           if (
             i === selectedChecker.position - 7 &&
@@ -1156,12 +1161,12 @@ const checkerMoveClickListener = () => {
 body.appendChild(createMainContainer(board));
 createBoard();
 
-// getBoard[53].appendChild(createWhiteChecker())
-// getBoard[46].appendChild(createBlackChecker())
-// getBoard[7].appendChild(createBlackQueen())
-// whiteCheckersList.push({ isQueen: false, position: 53 })
-// blackCheckersList.push({ isQueen: false, position: 46 })
-// blackCheckersList.push({ isQueen: true, position: 7 })
+// getBoard[7].appendChild(createWhiteChecker());
+// getBoard[14].appendChild(createBlackChecker());
+// getBoard[28].appendChild(createBlackChecker());
+// whiteCheckersList.push({ isQueen: false, position: 7 });
+// blackCheckersList.push({ isQueen: false, position: 14 });
+// blackCheckersList.push({ isQueen: false, position: 28 });
 
 checkerClickListener();
 checkerMoveClickListener();
