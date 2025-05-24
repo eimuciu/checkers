@@ -22,6 +22,8 @@ const selectedChecker = {
 let whosMove = 'white';
 let whiteCheckersList = [];
 let blackCheckersList = [];
+console.log('Black checkers', blackCheckersList);
+console.log('White checkers', whiteCheckersList);
 let mustMoves = [];
 let queenMustMoves = [];
 
@@ -693,43 +695,57 @@ const checkerClickListener = () => {
 };
 
 function whiteQueenMaking(num, coord) {
-  if (selectedChecker.position + num > 55) {
-    getBoard[coord].firstChild.style.backgroundColor = 'lightblue';
-  }
+  let queenMade = false;
+  // if (selectedChecker.position + num > 55) {
+  //   getBoard[coord].firstChild.style.backgroundColor = 'lightblue';
+  // }
   whiteCheckersList = whiteCheckersList.map((item) => {
     if (
       selectedChecker.position === item.position &&
       selectedChecker.position + num > 55
-    )
+    ) {
+      getBoard[coord].firstChild.style.backgroundColor = 'lightblue';
+      queenMade = true;
       return {
         ...item,
         position: selectedChecker.position + num,
         isQueen: true,
       };
-    if (selectedChecker.position === item.position)
+    }
+    if (selectedChecker.position === item.position) {
       return { ...item, position: selectedChecker.position + num };
+    }
     return item;
   });
+  return queenMade;
 }
 
 function blackQueenMaking(num, coord) {
-  if (selectedChecker.position + num < 8) {
-    getBoard[coord].firstChild.style.backgroundColor = 'grey';
-  }
+  let queenMade = false;
+  // if (selectedChecker.position + num < 8) {
+  //   getBoard[coord].firstChild.style.backgroundColor = 'grey';
+  // }
+  console.log('Biiiiiiiiiiiiiiiiiiggggggggggggggggg');
   blackCheckersList = blackCheckersList.map((item) => {
     if (
       selectedChecker.position === item.position &&
       selectedChecker.position + num < 8
-    )
+    ) {
+      getBoard[coord].firstChild.style.backgroundColor = 'grey';
+      queenMade = true;
       return {
         ...item,
         position: selectedChecker.position + num,
         isQueen: true,
       };
-    if (selectedChecker.position === item.position)
+    }
+    if (selectedChecker.position === item.position) {
       return { ...item, position: selectedChecker.position + num };
+    }
     return item;
   });
+  console.log(blackCheckersList);
+  return queenMade;
 }
 
 function updateCheckersArray(arr, from, to) {
@@ -1201,12 +1217,12 @@ function executeWhiteCheckerKicks(i, selectedChecker) {
     );
 
     //Queen making!
-    whiteQueenMaking(14, i);
+    const whiteQueen = whiteQueenMaking(14, i);
 
     // Move validity
     isMoveMadeWithOrWitoutAMustMove(i, selectedChecker);
 
-    timer.addChecker({ color: 'white', position: i });
+    timer.addChecker({ color: 'white', position: i, isQueen: whiteQueen });
 
     // //Resetting moves
     // selectedChecker.color = '';
@@ -1233,12 +1249,12 @@ function executeWhiteCheckerKicks(i, selectedChecker) {
     );
 
     //Queen making
-    whiteQueenMaking(18, i);
+    const whiteQueen = whiteQueenMaking(18, i);
 
     // Move validity
     isMoveMadeWithOrWitoutAMustMove(i, selectedChecker);
 
-    timer.addChecker({ color: 'white', position: i });
+    timer.addChecker({ color: 'white', position: i, isQueen: whiteQueen });
 
     //Resetting moves
     // selectedChecker.color = '';
@@ -1327,12 +1343,13 @@ function executeBlackCheckersKicks(i, selectedChecker) {
       getBoard[selectedChecker.position - 7].firstChild,
     );
     // Queen making
-    blackQueenMaking(-14, i);
+    const blackQueen = blackQueenMaking(-14, i);
+    console.log('Black queen made True or False', blackQueen);
 
     // Move validity
     isMoveMadeWithOrWitoutAMustMove(i, selectedChecker);
 
-    timer.addChecker({ color: 'black', position: i });
+    timer.addChecker({ color: 'black', position: i, isQueen: blackQueen });
 
     // Resetting moves
     // selectedChecker.color = '';
@@ -1358,12 +1375,12 @@ function executeBlackCheckersKicks(i, selectedChecker) {
       getBoard[selectedChecker.position - 9].firstChild,
     );
     // Queen making
-    blackQueenMaking(-18, i);
+    const blackQueen = blackQueenMaking(-18, i);
 
     // Move validity
     isMoveMadeWithOrWitoutAMustMove(i, selectedChecker);
 
-    timer.addChecker({ color: 'black', position: i });
+    timer.addChecker({ color: 'black', position: i, isQueen: blackQueen });
 
     // Resetting moves
     // selectedChecker.color = '';

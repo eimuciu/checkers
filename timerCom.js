@@ -32,8 +32,15 @@ class Timer {
         selectedChecker.position = null;
         whosMove = 'white';
       }
+      console.log('Current checker ', this.currentChecker);
       getBoard[this.currentChecker.position].firstChild.style.backgroundColor =
         this.currentChecker.color === 'white' ? 'white' : 'black';
+      if (this.currentChecker.isQueen) {
+        getBoard[
+          this.currentChecker.position
+        ].firstChild.style.backgroundColor =
+          this.currentChecker.color === 'white' ? 'lightblue' : 'grey';
+      }
       this.resetChecker();
       this.timerEl.style.visibility = 'hidden';
     }
