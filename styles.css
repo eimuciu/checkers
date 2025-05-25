@@ -4,3 +4,8 @@
   font-weight: bold;
   visibility: hidden;
 }
+
+body {
+  margin:0;
+  padding: 0;
+}

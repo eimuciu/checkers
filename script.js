@@ -3,10 +3,11 @@
 // Kai dama turi kelis kirtimus i skirtingus sonus netgi nukirtus kazkuri viena ismeta klaida ir dama pasalinama is zaidimo
 
 const body = document.body;
-body.style.padding = '50px';
+// body.style.padding = '50px';
 
 const board = document.createElement('div');
 board.style.width = '100%';
+board.style.height = '100%';
 board.style.display = 'flex';
 board.style.flexWrap = 'wrap';
 board.style.justifyContent = 'center';
@@ -457,12 +458,32 @@ function growDepth() {
 
 // document.body.prepend(h3El);
 
+function roundDownToNearest8(number) {
+  return Math.floor(number / 8) * 8;
+}
+
 const createMainContainer = (board) => {
+  const bodyHeight = body.clientHeight;
+  const bodyWidth = body.clientWidth;
+
+  let boardWidthAndHeight = bodyHeight;
+
+  if (bodyHeight > bodyWidth) {
+    boardWidthAndHeight = bodyWidth;
+  }
+
   const mainContainer = document.createElement('div');
-  mainContainer.style.width = '40%';
-  mainContainer.style.backgroundColor = '#1E352F';
+  mainContainer.style.width = `${
+    roundDownToNearest8(boardWidthAndHeight) - 100
+  }px`;
+  mainContainer.style.height = `${
+    roundDownToNearest8(boardWidthAndHeight) - 100
+  }px`;
+  mainContainer.style.border = '10px solid #1E352F';
+  // mainContainer.style.backgroundColor = '#1E352F';
+
   mainContainer.style.margin = '0 auto';
-  mainContainer.style.padding = '20px 10px 20px 10px';
+  // mainContainer.style.padding = '20px 10px 20px 10px';
   mainContainer.appendChild(board);
   return mainContainer;
 };
@@ -517,9 +538,9 @@ const createBlackQueen = () => {
 };
 
 const createCell = (checker, color) => {
-  const cellHeight = board.clientWidth * 0.123;
+  const cellHeight = board.clientWidth * 0.125;
   const cell = document.createElement('div');
-  cell.style.width = '12%';
+  cell.style.width = '12.5%';
   cell.style.height = cellHeight + 'px';
   if (color) {
     cell.style.backgroundColor = color;
